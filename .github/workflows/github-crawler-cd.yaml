@@ -107,6 +107,9 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: github-crawler-deployment
+      
+      - name: Display structure of downloaded files
+        run: ls -R
 
       - name: Deploy
         env:
@@ -120,7 +123,7 @@ jobs:
         run: |
           echo 'Hello World!'$RESOURCE_GROUP_NAME
           echo 'Hello World!'$FUNCTION_NAME
-          az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
-          az account set -s $ARM_SUBSCRIPTION_ID
+          az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID --output none
+          az account set -s $ARM_SUBSCRIPTION_ID --output none
           az functionapp deployment source config-zip -g $RESOURCE_GROUP_NAME -n $FUNCTION_NAME --src ./deployment.zip
 
