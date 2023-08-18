@@ -49,3 +49,4 @@ jobs:
       with:
         name: github-crawler-deployment
         path: ./publish/deployment.zip
+      working-directory: ./src/dotnet/GitHubCrawler
