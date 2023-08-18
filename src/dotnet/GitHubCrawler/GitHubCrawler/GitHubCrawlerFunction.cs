@@ -13,19 +13,20 @@ namespace GitHubCrawler
 {
     public class GitHubCrawlerFunction
     {
+        private readonly ILogger<GitHubCrawlerFunction> _logger;
         private readonly IGitHubQueryService _gitHubQueryService;
 
-        public GitHubCrawlerFunction(IGitHubQueryService myService)
+        public GitHubCrawlerFunction(ILogger<GitHubCrawlerFunction> log, IGitHubQueryService myService)
         {
+            _logger = log;
             _gitHubQueryService = myService;
         }
 
         [FunctionName("GitHubCrawler")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
