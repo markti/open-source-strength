@@ -2,3 +2,5 @@
 **/terraform.tfstate*
 **/.terraform*
 **/.debug.tfvars
+**/.DS_Store
+**/.vs/*
