@@ -88,6 +88,7 @@ jobs:
 
         temp1=$(terraform output github_crawler_function_name | tr -d '"')
         echo $temp1
+        echo "output1='$temp1'" >> $GITHUB_OUTPUT
         
   deploy:
     needs: [terraform, build]
