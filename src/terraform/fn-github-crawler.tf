@@ -7,7 +7,10 @@ resource "azurerm_linux_function_app" "github_crawler" {
   storage_account_access_key = azurerm_storage_account.function.primary_access_key
 
   site_config {
+  }
 
+  app_settings {
+    APPINSIGHTS_INSTRUMENTATIONKEY = azurerm_application_insights.main.instrumentation_key
   }
 
   identity {

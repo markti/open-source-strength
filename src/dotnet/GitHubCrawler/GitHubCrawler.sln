@@ -5,6 +5,12 @@ VisualStudioVersion = 25.0.1706.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubCrawler", "GitHubCrawler\GitHubCrawler.csproj", "{E759C272-7F6B-4B01-9388-CC0610D18D38}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubCrawler.UnitTests", "GitHubCrawler.UnitTests\GitHubCrawler.UnitTests.csproj", "{89A19946-A3A3-4FAF-94AC-3E009DDE68DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubCrawler.Services", "GitHubCrawler.Services\GitHubCrawler.Services.csproj", "{8331C8F7-6870-4E85-87FA-1098197E212D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubCrawler.Model", "GitHubCrawler.Model\GitHubCrawler.Model.csproj", "{70F1A80F-204D-47BA-9527-8B8C4FBA7682}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{E759C272-7F6B-4B01-9388-CC0610D18D38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E759C272-7F6B-4B01-9388-CC0610D18D38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E759C272-7F6B-4B01-9388-CC0610D18D38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89A19946-A3A3-4FAF-94AC-3E009DDE68DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89A19946-A3A3-4FAF-94AC-3E009DDE68DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89A19946-A3A3-4FAF-94AC-3E009DDE68DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89A19946-A3A3-4FAF-94AC-3E009DDE68DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8331C8F7-6870-4E85-87FA-1098197E212D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8331C8F7-6870-4E85-87FA-1098197E212D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8331C8F7-6870-4E85-87FA-1098197E212D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8331C8F7-6870-4E85-87FA-1098197E212D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70F1A80F-204D-47BA-9527-8B8C4FBA7682}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70F1A80F-204D-47BA-9527-8B8C4FBA7682}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70F1A80F-204D-47BA-9527-8B8C4FBA7682}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70F1A80F-204D-47BA-9527-8B8C4FBA7682}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

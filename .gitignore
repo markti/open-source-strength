@@ -4,3 +4,5 @@
 **/.debug.tfvars
 **/.DS_Store
 **/.vs/*
+**/bin/*
+**/obj/*
