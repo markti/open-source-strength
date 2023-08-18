@@ -87,7 +87,7 @@ jobs:
         echo "::set-output name=github_crawler_function_name::$github_crawler_function_name"
 
   deploy:
-    needs: terraform
+    needs: [terraform, build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
