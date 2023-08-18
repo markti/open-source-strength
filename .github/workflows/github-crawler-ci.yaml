@@ -41,5 +41,5 @@ jobs:
     - name: Publish
       run: |
         dotnet publish -c Release -o ./publish
-        zip -r ../deployment.zip .
+        zip -r ../deployment.zip ./publish
       working-directory: ./src/dotnet/GitHubCrawler
