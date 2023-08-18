@@ -87,9 +87,7 @@ jobs:
         terraform apply -var-file=$ENV_VAR_FILE_PATH -auto-approve
 
         temp1=$(terraform output github_crawler_function_name | tr -d '"')
-        echo 'Azure Function Name '$temp1
-        echo "Azure Function Name $temp1"
-        echo "output1=$temp1" >> $GITHUB_OUTPUT
+        echo "output1=$temp1" >> "$GITHUB_OUTPUT"
 
   deploy:
     needs: [terraform, build]
