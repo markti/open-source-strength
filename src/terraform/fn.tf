@@ -19,3 +19,11 @@ resource "azurerm_service_plan" "consumption" {
   os_type             = "Linux"
   sku_name            = "Y1"
 }
+
+resource "azurerm_service_plan" "premium" {
+  name                = "asp-${var.application_name}-${var.environment_name}-premium"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  os_type             = "Linux"
+  sku_name            = "EP2"
+}
