@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/terraform/**'
+      - '.github/workflows/**'
 
 env:
   WORKING_DIRECTORY: "src/terraform/"
