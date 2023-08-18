@@ -6,8 +6,8 @@ on:
       - main
     paths:
       - 'src/terraform/**'
+      - 'src/dotnet/GitHubCrawler/**'
       - '.github/workflows/**'
-      - 'dotnet/GitHubCrawler/**'
 
 env:
   WORKING_DIRECTORY: "src/terraform/"
