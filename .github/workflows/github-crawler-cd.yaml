@@ -57,7 +57,7 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     outputs:
-      github_crawler_function_name: ${{ steps.Apply.outputs.output1 }}
+      out1: ${{ steps.apply.outputs.output1 }}
     steps:
     - uses: actions/checkout@v3
 
@@ -66,7 +66,7 @@ jobs:
       with:
         terraform_version: 1.5.5 
 
-    - name: Apply
+    - name: apply
       env: 
         ARM_SUBSCRIPTION_ID: ${{ vars.ARM_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ vars.ARM_TENANT_ID }}
@@ -98,7 +98,7 @@ jobs:
 
       - name: Deploy
         env:
-          OUTPUT1: ${{needs.terraform.outputs.github_crawler_function_name}}
+          OUTPUT1: ${{needs.terraform.outputs.out1}}
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo 'Hello World!'$OUTPUT1
