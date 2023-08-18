@@ -87,8 +87,7 @@ jobs:
         terraform apply -var-file=$ENV_VAR_FILE_PATH -auto-approve
 
         temp1=$(terraform output github_crawler_function_name | tr -d '"')
-        echo 'hello temp1'
-        echo 'hello temp1:'$temp1
+        echo $temp1
         
   deploy:
     needs: [terraform, build]
