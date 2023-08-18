@@ -37,3 +37,9 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
       working-directory: ./src/dotnet/GitHubCrawler
+      
+    - name: Publish
+      run: |
+        dotnet publish -c Release -o ./publish
+        zip -r ../deployment.zip .
+      working-directory: ./src/dotnet/GitHubCrawler
