@@ -1,2 +1,2 @@
-application_name = "oss"
+application_name = "osstrength"
 location         = "westus"
