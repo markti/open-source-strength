@@ -9,7 +9,7 @@ resource "azurerm_linux_function_app" "github_crawler" {
   site_config {
   }
 
-  app_settings {
+  app_settings = {
     APPINSIGHTS_INSTRUMENTATIONKEY = azurerm_application_insights.main.instrumentation_key
   }
 
