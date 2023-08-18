@@ -15,3 +15,11 @@ resource "azurerm_linux_function_app" "github_crawler" {
     identity_ids = [azurerm_user_assigned_identity.function.id]
   }
 }
+
+resource "azurerm_storage_account" "github_crawler" {
+  name                     = "st${var.application_name}${var.environment_name}ghc"
+  resource_group_name      = azurerm_resource_group.main.name
+  location                 = azurerm_resource_group.main.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
