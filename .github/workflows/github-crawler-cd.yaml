@@ -56,6 +56,8 @@ jobs:
 
   terraform:
     runs-on: ubuntu-latest
+    outputs:
+      github_crawler_function_name: ${{ steps.Apply.outputs.github_crawler_function_name }}
     steps:
     - uses: actions/checkout@v3
 
@@ -85,7 +87,7 @@ jobs:
         terraform apply -var-file=$ENV_VAR_FILE_PATH -auto-approve
 
         github_crawler_function_name=$(terraform output github_crawler_function_name)
-        echo "{github_crawler_function_name}={$github_crawler_function_name}" >> "$GITHUB_OUTPUT"
+        echo "github_crawler_function_name=$github_crawler_function_name" >> "$GITHUB_OUTPUT"
 
   deploy:
     needs: [terraform, build]
