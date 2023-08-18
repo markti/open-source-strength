@@ -41,11 +41,11 @@ jobs:
     - name: Publish
       run: |
         dotnet publish -c Release -o ./publish
-        zip -r ../deployment.zip ./publish
+        zip -r ./deployment.zip ./publish
       working-directory: ./src/dotnet/GitHubCrawler
 
     - name: Upload Deployment Package
       uses: actions/upload-artifact@v2
       with:
         name: github-crawler-deployment
-        path: ./src/dotnet/GitHubCrawler/publish/deployment.zip
+        path: ./src/dotnet/GitHubCrawler/deployment.zip
