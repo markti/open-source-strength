@@ -1,0 +1,39 @@
+name: github-crawler-ci
+
+on:
+  push:
+  pull_request:
+    branches: [ main ]
+    paths:
+    - 'dotnet/GitHubCrawler'
+
+env:
+  DOTNET_VERSION: '6.0.401' # The .NET SDK version to use
+
+jobs:
+  build:
+
+    name: build-${{matrix.os}}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install dependencies
+      run: dotnet restore
+      working-directory: ./src/dotnet/GitHubCrawler
+      
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+      working-directory: ./src/dotnet/GitHubCrawler
+      
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+      working-directory: ./src/dotnet/GitHubCrawler
