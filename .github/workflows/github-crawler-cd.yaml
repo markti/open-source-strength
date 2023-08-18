@@ -57,7 +57,8 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     outputs:
-      out1: ${{ steps.apply.outputs.output1 }}
+      github_crawler_function_name: ${{ steps.apply.outputs.github_crawler_function_name }}
+      resource_group_name: ${{ steps.apply.outputs.resource_group_name }}
     steps:
     - uses: actions/checkout@v3
 
@@ -88,15 +89,14 @@ jobs:
           -backend-config="key=$TF_BACKEND_KEY"
         terraform apply -var-file=$ENV_VAR_FILE_PATH -auto-approve
 
-        temp1=$(terraform output github_crawler_function_name | tr -d '"\n')
-        temp2=$(terraform output github_crawler_function_name)
-        temp3=$(terraform output -raw github_crawler_function_name)
+        github_crawler_function_name=$(terraform output -raw github_crawler_function_name)
+        resource_group_name=$(terraform output -raw resource_group_name)
         
-        echo $temp1
-        echo $temp2
-        echo $temp3
+        echo $github_crawler_function_name
+        echo $resource_group_name
 
-        echo "output1=$temp3" >> "$GITHUB_OUTPUT"
+        echo "github_crawler_function_name=$github_crawler_function_name" >> "$GITHUB_OUTPUT"
+        echo "resource_group_name=$resource_group_name" >> "$GITHUB_OUTPUT"
         
   deploy:
     needs: [terraform, build]
@@ -104,9 +104,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: actions/download-artifact@v3
+        with:
+          name: github-crawler-deployment
+
       - name: Deploy
         env:
-          OUTPUT1: ${{needs.terraform.outputs.out1}}
+          RESOURCE_GROUP_NAME: ${{needs.terraform.outputs.resource_group_name}}
+          FUNCTION_NAME: ${{needs.terraform.outputs.github_crawler_function_name}}
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          echo 'Hello World!'$OUTPUT1
+          echo 'Hello World!'$RESOURCE_GROUP_NAME
+          echo 'Hello World!'$FUNCTION_NAME
+          az functionapp deployment source config-zip -g $RESOURCE_GROUP_NAME -n $FUNCTION_NAME --src ./deployment.zip
+
