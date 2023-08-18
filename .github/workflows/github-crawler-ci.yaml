@@ -48,5 +48,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: github-crawler-deployment
-        path: ./publish/deployment.zip
-      working-directory: ./src/dotnet/GitHubCrawler
+        path: ./src/dotnet/GitHubCrawler/publish/deployment.zip
