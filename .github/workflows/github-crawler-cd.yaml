@@ -86,7 +86,7 @@ jobs:
           -backend-config="key=$TF_BACKEND_KEY"
         terraform apply -var-file=$ENV_VAR_FILE_PATH -auto-approve
 
-        echo "output1=$(terraform output -raw github_crawler_function_name | tr -d '"')" >> $GITHUB_OUTPUT
+        echo "output1=$(terraform output github_crawler_function_name | tr -d '"')" >> $GITHUB_OUTPUT
 
   deploy:
     needs: [terraform, build]
