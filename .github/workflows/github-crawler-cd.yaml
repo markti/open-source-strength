@@ -87,8 +87,7 @@ jobs:
         terraform apply -var-file=$ENV_VAR_FILE_PATH -auto-approve
 
         github_crawler_function_name_value=$(terraform output github_crawler_function_name | tr -d '"')
-        echo 'output1='$github_crawler_function_name_value >> "$GITHUB_OUTPUT"
-        echo 'output1='$github_crawler_function_name_value
+        echo "output1=$github_crawler_function_name_value" >> $GITHUB_OUTPUT
 
   deploy:
     needs: [terraform, build]
