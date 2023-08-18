@@ -9,8 +9,11 @@ namespace GitHubCrawler
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
+            var patToken = Environment.GetEnvironmentVariable("GITHUB_PAT_TOKEN");
+            var gitHubQueryService = new GitHubQueryService(patToken);
+
             // Register your services here
-            builder.Services.AddSingleton<IGitHubQueryService, GitHubQueryService>();
+            builder.Services.AddSingleton<IGitHubQueryService>(gitHubQueryService);
         }
     }
 }
