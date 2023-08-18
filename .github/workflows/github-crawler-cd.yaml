@@ -13,6 +13,45 @@ env:
   ENVIRONMENT_NAME: "dev"
 
 jobs:
+  build:
+
+    name: build-${{matrix.os}}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install dependencies
+      run: dotnet restore
+      working-directory: ./src/dotnet/GitHubCrawler
+      
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+      working-directory: ./src/dotnet/GitHubCrawler
+      
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+      working-directory: ./src/dotnet/GitHubCrawler
+      
+    - name: Publish
+      run: |
+        dotnet publish -c Release -o ./publish
+        zip -r ./deployment.zip ./publish
+      working-directory: ./src/dotnet/GitHubCrawler
+
+    - name: Upload Deployment Package
+      uses: actions/upload-artifact@v2
+      with:
+        name: github-crawler-deployment
+        path: ./src/dotnet/GitHubCrawler/deployment.zip
+
   terraform:
     runs-on: ubuntu-latest
     steps:
@@ -42,3 +81,12 @@ jobs:
           -backend-config="container_name=$BACKEND_STORAGE_CONTAINER_NAME" \
           -backend-config="key=$TF_BACKEND_KEY"
         terraform apply -var-file=$ENV_VAR_FILE_PATH -auto-approve
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Deploy
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      run: |
+        echo 'Hello World!'
