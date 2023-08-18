@@ -94,12 +94,11 @@ jobs:
     needs: [terraform, build]
     runs-on: ubuntu-latest
     steps:
-      - env:
-          OUTPUT1: ${{needs.terraform.outputs.github_crawler_function_name}}
-
       - uses: actions/checkout@v3
 
       - name: Deploy
+        env:
+          OUTPUT1: ${{needs.terraform.outputs.github_crawler_function_name}}
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo 'Hello World!'$OUTPUT1
