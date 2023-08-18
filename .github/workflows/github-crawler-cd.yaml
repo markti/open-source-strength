@@ -95,7 +95,7 @@ jobs:
         echo $temp2
         echo $temp3
 
-        echo "output1=$temp1" >> $GITHUB_OUTPUT
+        echo "output1=$temp1" >> "$GITHUB_OUTPUT"
         
   deploy:
     needs: [terraform, build]
