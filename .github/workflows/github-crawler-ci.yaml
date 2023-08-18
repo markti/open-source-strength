@@ -43,3 +43,9 @@ jobs:
         dotnet publish -c Release -o ./publish
         zip -r ../deployment.zip ./publish
       working-directory: ./src/dotnet/GitHubCrawler
+
+    - name: Upload Deployment Package
+      uses: actions/upload-artifact@v2
+      with:
+        name: github-crawler-deployment
+        path: ./publish/deployment.zip
