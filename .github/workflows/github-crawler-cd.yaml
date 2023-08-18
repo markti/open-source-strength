@@ -87,6 +87,13 @@ jobs:
         terraform apply -var-file=$ENV_VAR_FILE_PATH -auto-approve
 
         temp1=$(terraform output github_crawler_function_name | tr -d '"\n')
+        temp2=$(terraform output github_crawler_function_name)
+        temp3=$(terraform output -raw github_crawler_function_name)
+        
+        echo $temp1
+        echo $temp2
+        echo $temp3
+
         echo "output1=$temp1" >> $GITHUB_OUTPUT
         
   deploy:
