@@ -119,7 +119,6 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           RESOURCE_GROUP_NAME: ${{needs.terraform.outputs.resource_group_name}}
           FUNCTION_NAME: ${{needs.terraform.outputs.github_crawler_function_name}}
-        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo 'Hello World!'$RESOURCE_GROUP_NAME
           echo 'Hello World!'$FUNCTION_NAME
