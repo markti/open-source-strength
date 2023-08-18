@@ -12,16 +12,8 @@ resource "azurerm_user_assigned_identity" "function" {
   name                = "mi-${var.application_name}-${var.environment_name}-fn"
 }
 
-resource "azurerm_service_plan" "consumption" {
-  name                = "asp-${var.application_name}-${var.environment_name}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  os_type             = "Linux"
-  sku_name            = "Y1"
-}
-
 resource "azurerm_service_plan" "premium" {
-  name                = "asp-${var.application_name}-${var.environment_name}-premium"
+  name                = "asp-${var.application_name}-${var.environment_name}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   os_type             = "Linux"
