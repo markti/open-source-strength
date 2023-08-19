@@ -49,8 +49,8 @@ jobs:
     - name: Publish
       run: |
         dotnet publish **/GitHubCrawler.csproj -c Release -r ubuntu.22.04-x64 --self-contained -o ./publish
-        zip -r ./deployment.zip ./publish
-      working-directory: ./src/dotnet/GitHubCrawler
+        zip -r ../deployment.zip ./
+      working-directory: ./src/dotnet/GitHubCrawler/publish
       
     - name: Display structure of downloaded files
       run: ls -R
