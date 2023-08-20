@@ -24,9 +24,9 @@ namespace GitHubCrawler
 
         [FunctionName("github-repo")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "github/{owner}/{repo}")] HttpRequest req, string owner, string repo)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "github")] HttpRequest req)
         {
-            _logger.LogInformation($"C# HTTP trigger function processed a request.{owner}/{repo}");
+            _logger.LogInformation($"C# HTTP trigger function processed a request.");
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
