@@ -8,3 +8,4 @@
 **/obj/*
 **/PublishProfiles/*.pubxml
 **/GitHubCrawler/publish_output/*
+**/WebCrawler/publish_output/*

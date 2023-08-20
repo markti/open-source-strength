@@ -1,8 +1,9 @@
 ﻿using System;
-namespace GitHubCrawler.Services
+namespace WebCrawler.Model
 {
-	public class QueueConfig
+	public class BlobConfig
     {
         public string ConnectionString { get; set; }
     }
 }
+
