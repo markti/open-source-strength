@@ -5,6 +5,6 @@ namespace WebCrawler.Services.Interfaces
 {
 	public interface IPageProcessor
 	{
-        Task<CosignerSummary> ProcessPage();
+        Task<CosignerSummary> ProcessPageAsync();
     }
 }

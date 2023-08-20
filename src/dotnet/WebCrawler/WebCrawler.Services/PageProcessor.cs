@@ -8,7 +8,7 @@ public class PageProcessor : IPageProcessor
 {
     private const string targetUrl = "https://raw.githubusercontent.com/opentffoundation/manifesto/main/index.html";
 
-    public async Task<CosignerSummary> ProcessOpenTF()
+    public async Task<CosignerSummary> ProcessPageAsync()
     {
         CosignerSummary summary = new CosignerSummary();
 
