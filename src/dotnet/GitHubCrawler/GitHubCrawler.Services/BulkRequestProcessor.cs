@@ -121,7 +121,10 @@ namespace GitHubCrawler.Services
                 }
             }
 
-            await SaveUserContribution(userRequest, matchingPullRequests);
+            if(matchingPullRequests > 0)
+            {
+                await SaveUserContribution(userRequest, matchingPullRequests);
+            }
         }
 
         private async Task SaveUserContribution(ProcessGitHubUserProviderRequest userRequest, int pullRequestsCount)
