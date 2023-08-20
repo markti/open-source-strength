@@ -7,3 +7,4 @@
 **/bin/*
 **/obj/*
 **/PublishProfiles/*.pubxml
+**/GitHubCrawler/publish_output/*
