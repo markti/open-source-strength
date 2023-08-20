@@ -23,9 +23,9 @@ namespace GitHubCrawler.Services
             _queueConfig = queueConfig;
         }
 
-        public async Task ProcessRepoRequest(ProcessRepositoryPageRequest processRepoPageRequest)
+        public async Task ProcessRepoPullRequestHistoryAsync(ProcessRepositoryPageRequest processRepoRequest)
         {
-            var queueMessage = JsonConvert.SerializeObject(processRepoPageRequest);
+            var queueMessage = JsonConvert.SerializeObject(processRepoRequest);
 
             var queueClient = new QueueClient(_queueConfig.ConnectionString, QueueNames.PULL_REQUEST_PAGE_QUEUE_NAME, new QueueClientOptions
             {
