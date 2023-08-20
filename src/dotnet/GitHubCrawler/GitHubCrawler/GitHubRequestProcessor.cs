@@ -29,14 +29,14 @@ namespace GitHubCrawler
         }
 
         [FunctionName("pull-request-page")]
-        public void Run([QueueTrigger(QueueNames.PULL_REQUEST_PAGE_QUEUE_NAME, Connection = "STORAGE_CONNECTION_STRING")]string queueMessage)
+        public void Run([QueueTrigger(QueueNames.PULL_REQUEST_PAGE_QUEUE_NAME, Connection = "QUEUE_CONNECTION_STRING")]string queueMessage)
         {
             _logger.LogInformation("Reading Pull Request Page Request Queue Item");
             var dataRequest = JsonConvert.DeserializeObject<ProcessRepositoryPageRequest>(queueMessage);
             _bulkRequestProcessor.ProcessPullRequestPageRequest(dataRequest);
         }
         [FunctionName("user-contributions")]
-        public void ProcessUserContributions([QueueTrigger(QueueNames.GITHUB_USER_PROVIDER, Connection = "STORAGE_CONNECTION_STRING")] string queueMessage)
+        public void ProcessUserContributions([QueueTrigger(QueueNames.GITHUB_USER_PROVIDER, Connection = "QUEUE_CONNECTION_STRING")] string queueMessage)
         {
             _logger.LogInformation("Reading Pull Request Page Request Queue Item");
             var dataRequest = JsonConvert.DeserializeObject<ProcessGitHubUserProviderRequest>(queueMessage);

@@ -2,6 +2,7 @@
 using System.Reflection.Metadata;
 using System.Text;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using GitHubCrawler.Model;
 using GitHubCrawler.Services.Interfaces;
 using Microsoft.ApplicationInsights;
@@ -74,13 +75,48 @@ namespace GitHubCrawler.Services
 
         public async Task ProcessGitHubUserContributionRequest(ProcessGitHubUserProviderRequest userRequest)
         {
+            var matchingPullRequests = 0;
             var currentPageNumber = 1;
+            var shouldContinue = true;
 
             var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
             var blobContainerClient = blobServiceClient.GetBlobContainerClient(BlobContainerNames.PULL_REQUESTS);
 
-            var blobName = $"{userRequest.Owner}/{userRequest.Repo}/{currentPageNumber}.json";
+            while(shouldContinue)
+            {
+                var blobName = $"{userRequest.Owner}/{userRequest.Repo}/{currentPageNumber}.json";
+                var blobClient = blobContainerClient.GetBlobClient(blobName);
+
+                BlobDownloadResult downloadResult = await blobClient.DownloadContentAsync();
+                string blobContents = downloadResult.Content.ToString();
+
+                // Deserialize blob contents to FooBar object
+                var prSummary = JsonConvert.DeserializeObject<List<PullRequestSummary>>(blobContents);
+
+                if(prSummary == null)
+                {
+                    shouldContinue = false;
+                }
+                else
+                {
+                    var pullRequestsInCurrentBatch = prSummary.Where(f => f.UserName == userRequest.UserName).Count();
+                    matchingPullRequests += pullRequestsInCurrentBatch;
+                }
+            }
+
+            await SaveUserContribution(userRequest, matchingPullRequests);
+        }
+
+        private async Task SaveUserContribution(ProcessGitHubUserProviderRequest userRequest, int pullRequestsCount)
+        {
+            var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
+            var blobContainerClient = blobServiceClient.GetBlobContainerClient(BlobContainerNames.USERS);
+
+            var blobName = $"{userRequest.UserName}/{userRequest.Owner}/{userRequest.Repo}.json";
             var blobClient = blobContainerClient.GetBlobClient(blobName);
+
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(pullRequestsCount.ToString()));
+            await blobClient.UploadAsync(stream, overwrite: true);
         }
     }
 }

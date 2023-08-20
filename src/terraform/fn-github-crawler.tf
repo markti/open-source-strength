@@ -44,3 +44,9 @@ resource "azurerm_storage_container" "github_crawler_pull_requests" {
   storage_account_name  = azurerm_storage_account.github_crawler.name
   container_access_type = "private"
 }
+
+resource "azurerm_storage_container" "github_crawler_pull_requests" {
+  name                  = "users"
+  storage_account_name  = azurerm_storage_account.github_crawler.name
+  container_access_type = "private"
+}
