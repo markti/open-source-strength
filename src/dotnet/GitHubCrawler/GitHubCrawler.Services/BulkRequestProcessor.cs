@@ -93,6 +93,7 @@ namespace GitHubCrawler.Services
             while(shouldContinue)
             {
                 var blobName = $"{userRequest.Owner}/{userRequest.Repo}/{currentPageNumber}.json";
+                _logger.LogInformation($"Checking file {blobName} for user {userRequest.UserName}");
                 var blobClient = blobContainerClient.GetBlobClient(blobName);
 
                 var blobExistsResult = (await blobClient.ExistsAsync()).Value;
