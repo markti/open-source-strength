@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using GitHubCrawler.Services;
+using GitHubCrawler.Model;
 
 namespace GitHubCrawler
 {
@@ -29,9 +30,11 @@ namespace GitHubCrawler
             _logger.LogInformation($"C# HTTP trigger function processed a request.");
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
+            var request = JsonConvert.DeserializeObject<ProcessRepositoryRequest>(requestBody);
 
-            string responseMessage = "Hello Open Source Strength!";
+            string responseMessage = $"Request to process {request.Owner}/{request.Repo}";
+
+            _logger.LogInformation(responseMessage);
 
             return new OkObjectResult(responseMessage);
         }
