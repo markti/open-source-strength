@@ -5,6 +5,6 @@ namespace GitHubCrawler.Services.Interfaces
 {
 	public interface IBulkRequestProcessor
 	{
-        Task ProcessPullRequestPageRequest(ProcessRepositoryPageRequest processRepoRequest);
+        Task ProcessPullRequestPageRequest(ProcessRepositoryPageRequest repoPageRequest);
     }
 }

@@ -5,6 +5,6 @@ namespace GitHubCrawler.Services.Interfaces
 {
 	public interface IFanoutRequestProcessor
     {
-        Task ProcessRepoPullRequestHistoryAsync(ProcessRepositoryPageRequest processRepoRequest);
+        Task ProcessRepoPullRequestHistoryAsync(ProcessRepositoryPageRequest repoPageRequest);
     }
 }

@@ -27,11 +27,16 @@ namespace GitHubCrawler
             {
                 ConnectionString = queueConnectionString
             };
+            var blobConfig = new BlobConfig()
+            {
+                ConnectionString = queueConnectionString
+            };
 
             // Register your services here
             builder.Services.AddSingleton<IGitHubQueryService>(gitHubQueryService);
             // Configuration for Queue
             builder.Services.AddSingleton<QueueConfig>(queueConfig);
+            builder.Services.AddSingleton<BlobConfig>(blobConfig);
             builder.Services.AddScoped<IBulkRequestProcessor, BulkRequestProcessor>();
             builder.Services.AddScoped<IFanoutRequestProcessor, FanoutRequestProcessor>();
         }
