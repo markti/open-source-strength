@@ -1,0 +1,143 @@
+name: Terraform
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/terraform/**'
+      - 'src/dotnet/WebCrawler/**'
+      - '.github/workflows/**'
+
+env:
+  WORKING_DIRECTORY: "src/terraform/"
+  APPLICATION_NAME: "oss"
+  ENVIRONMENT_NAME: "dev"
+  DOTNET_VERSION: '6.0.x'
+
+jobs:
+  build:
+
+    name: build-${{matrix.os}}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install dependencies
+      run: dotnet restore
+      working-directory: ./src/dotnet/WebCrawler
+      
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+      working-directory: ./src/dotnet/WebCrawler
+      
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+      working-directory: ./src/dotnet/WebCrawler
+      
+    - name: Display structure of downloaded files
+      run: ls -R
+      working-directory: ./src/dotnet/WebCrawler
+
+    - name: Publish
+      run: |
+        dotnet publish **/WebCrawler.csproj -c Release -o ./publish
+      working-directory: ./src/dotnet/WebCrawler
+
+    - name: Generate the Deployment Package
+      run: |
+        zip -r ../deployment.zip ./
+      working-directory: ./src/dotnet/WebCrawler/publish
+      
+    - name: Display structure of downloaded files
+      run: ls -R
+      working-directory: ./src/dotnet/WebCrawler
+
+    - name: Upload Deployment Package
+      uses: actions/upload-artifact@v2
+      with:
+        name: web-crawler-deployment
+        path: ./src/dotnet/WebCrawler/deployment.zip
+
+  terraform:
+    runs-on: ubuntu-latest
+    outputs:
+      web_crawler_function_name: ${{ steps.apply.outputs.web_crawler_function_name }}
+      resource_group_name: ${{ steps.apply.outputs.resource_group_name }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.5
+        terraform_wrapper: false
+
+    - id: apply
+      name: Terraform Apply
+      env: 
+        ARM_SUBSCRIPTION_ID: ${{ vars.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ vars.ARM_TENANT_ID }}
+        ARM_CLIENT_ID: ${{ vars.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        BACKEND_RESOURCE_GROUP_NAME: ${{ vars.BACKEND_RESOURCE_GROUP_NAME }}
+        BACKEND_STORAGE_ACCOUNT_NAME: ${{ vars.BACKEND_STORAGE_ACCOUNT_NAME }}
+        BACKEND_STORAGE_CONTAINER_NAME: ${{ vars.BACKEND_STORAGE_CONTAINER_NAME }}
+        TF_BACKEND_KEY: ${{ env.APPLICATION_NAME }}-${{ env.ENVIRONMENT_NAME }}
+        ENV_VAR_FILE_PATH: "./env/${{ env.ENVIRONMENT_NAME }}.tfvars"
+        TF_VAR_github_pat_token: ${{ secrets.GH_PAT_TOKEN }}
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      run: |
+        terraform init \
+          -backend-config="resource_group_name=$BACKEND_RESOURCE_GROUP_NAME" \
+          -backend-config="storage_account_name=$BACKEND_STORAGE_ACCOUNT_NAME" \
+          -backend-config="container_name=$BACKEND_STORAGE_CONTAINER_NAME" \
+          -backend-config="key=$TF_BACKEND_KEY"
+        terraform apply -var-file=$ENV_VAR_FILE_PATH -auto-approve
+
+        web_crawler_function_name=$(terraform output -raw web_crawler_function_name)
+        resource_group_name=$(terraform output -raw resource_group_name)
+        
+        echo $web_crawler_function_name
+        echo $resource_group_name
+
+        echo "web_crawler_function_name=$web_crawler_function_name" >> "$GITHUB_OUTPUT"
+        echo "resource_group_name=$resource_group_name" >> "$GITHUB_OUTPUT"
+        
+  deploy:
+    needs: [terraform, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: web-crawler-deployment
+      
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Deploy
+        env:
+          ARM_SUBSCRIPTION_ID: ${{ vars.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ vars.ARM_TENANT_ID }}
+          ARM_CLIENT_ID: ${{ vars.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          RESOURCE_GROUP_NAME: ${{needs.terraform.outputs.resource_group_name}}
+          FUNCTION_NAME: ${{needs.terraform.outputs.web_crawler_function_name}}
+        run: |
+          echo 'Hello World!'$RESOURCE_GROUP_NAME
+          echo 'Hello World!'$FUNCTION_NAME
+          az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID --output none
+          az account set -s $ARM_SUBSCRIPTION_ID --output none
+          az functionapp deployment source config-zip -g $RESOURCE_GROUP_NAME -n $FUNCTION_NAME --src ./deployment.zip
+
