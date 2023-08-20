@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'src/terraform/**'
-      - 'src/dotnet/GitHubCrawler/**'
+      - 'src/dotnet/**'
       - '.github/workflows/**'
 
 env:
