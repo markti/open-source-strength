@@ -1,7 +1,7 @@
 ﻿using System;
 using GitHubCrawler.Model;
 
-namespace GitHubCrawler.Services
+namespace GitHubCrawler.Services.Interfaces
 {
 	public interface IGitHubQueryService
 	{

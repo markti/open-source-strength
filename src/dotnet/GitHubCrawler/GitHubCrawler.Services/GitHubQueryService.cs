@@ -1,4 +1,5 @@
 ﻿using GitHubCrawler.Model;
+using GitHubCrawler.Services.Interfaces;
 using Octokit;
 
 namespace GitHubCrawler.Services;

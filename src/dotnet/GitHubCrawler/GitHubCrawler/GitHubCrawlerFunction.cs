@@ -9,34 +9,38 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using GitHubCrawler.Services;
 using GitHubCrawler.Model;
+using GitHubCrawler.Services.Interfaces;
 
 namespace GitHubCrawler
 {
     public class GitHubCrawlerFunction
     {
         private readonly ILogger<GitHubCrawlerFunction> _logger;
-        private readonly IGitHubQueryService _gitHubQueryService;
+        private readonly IFanoutRequestProcessor _fanoutRequestProcessor;
 
-        public GitHubCrawlerFunction(ILogger<GitHubCrawlerFunction> log, IGitHubQueryService myService)
+        public GitHubCrawlerFunction(ILogger<GitHubCrawlerFunction> log, IFanoutRequestProcessor fanoutRequestProcessor)
         {
             _logger = log;
-            _gitHubQueryService = myService;
+            _fanoutRequestProcessor = fanoutRequestProcessor;
         }
 
-        [FunctionName("github-repo-report-generate")]
+        [FunctionName("github-repo-pull-request-history")]
         public async Task<IActionResult> GenerateGitHubRepoReport(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "github")] HttpRequest req)
         {
-            _logger.LogInformation($"C# HTTP trigger function processed a request.");
-
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var request = JsonConvert.DeserializeObject<ProcessRepositoryRequest>(requestBody);
 
-            string responseMessage = $"Request to process {request.Owner}/{request.Repo}";
+            var pageRequest = new ProcessRepositoryPageRequest()
+            {
+                Owner = request.Owner,
+                Repo = request.Repo,
+                PageNumber = 1
+            };
 
-            _logger.LogInformation(responseMessage);
+            await _fanoutRequestProcessor.ProcessRepoPullRequestHistoryAsync(pageRequest);
 
-            return new OkObjectResult(responseMessage);
+            return new OkResult();
         }
     }
 }

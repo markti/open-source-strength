@@ -5,6 +5,6 @@ namespace GitHubCrawler.Model
     {
         public string Owner { get; set; }
         public string Repo { get; set; }
-        public string PageNumber { get; set; }
+        public int PageNumber { get; set; }
     }
 }
