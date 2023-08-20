@@ -1,3 +1,4 @@
+# https://learn.microsoft.com/en-us/azure/azure-functions/dotnet-isolated-process-guide
 resource "azurerm_linux_function_app" "github_crawler" {
   name                       = "func-${var.application_name}-${var.environment_name}-github-crawler"
   resource_group_name        = azurerm_resource_group.main.name
@@ -8,7 +9,8 @@ resource "azurerm_linux_function_app" "github_crawler" {
 
   site_config {
     application_stack {
-      dotnet_version = "6.0"
+      dotnet_version              = "6.0"
+      use_dotnet_isolated_runtime = true
     }
     cors {
       allowed_origins     = ["https://portal.azure.com"]
