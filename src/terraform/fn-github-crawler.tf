@@ -10,6 +10,10 @@ resource "azurerm_linux_function_app" "github_crawler" {
     application_stack {
       dotnet_version = "6.0"
     }
+    cors {
+      allowed_origins     = ["https://portal.azure.com"]
+      support_credentials = true
+    }
   }
 
   app_settings = {
