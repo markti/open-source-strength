@@ -20,18 +20,21 @@ namespace WebCrawler
             });
             builder.Services.AddApplicationInsightsTelemetry();
 
-            var queueConnectionString = Environment.GetEnvironmentVariable("STORAGE_CONNECTION_STRING");
+            var queueConnectionString = Environment.GetEnvironmentVariable("QUEUE_CONNECTION_STRING");
             var queueConfig = new QueueConfig()
             {
                 ConnectionString = queueConnectionString
             };
+            var blobConnectionString = Environment.GetEnvironmentVariable("STORAGE_CONNECTION_STRING");
             var blobConfig = new BlobConfig()
             {
-                ConnectionString = queueConnectionString
+                ConnectionString = blobConnectionString
             };
             // Configuration for Queue
             builder.Services.AddSingleton<QueueConfig>(queueConfig);
             builder.Services.AddSingleton<BlobConfig>(blobConfig);
+            builder.Services.AddSingleton<IGitHubProjectService, GitHubProjectService>();
+            builder.Services.AddSingleton<IFanoutRequestProcessor, FanoutRequestProcessor>();
             builder.Services.AddSingleton<IPageProcessor, PageProcessor>();
         }
     }

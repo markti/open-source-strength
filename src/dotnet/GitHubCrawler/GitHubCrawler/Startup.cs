@@ -23,14 +23,15 @@ namespace GitHubCrawler
             var patToken = Environment.GetEnvironmentVariable("GITHUB_PAT_TOKEN");
             var gitHubQueryService = new GitHubQueryService(patToken);
 
-            var queueConnectionString = Environment.GetEnvironmentVariable("STORAGE_CONNECTION_STRING");
+            var queueConnectionString = Environment.GetEnvironmentVariable("QUEUE_CONNECTION_STRING");
             var queueConfig = new QueueConfig()
             {
                 ConnectionString = queueConnectionString
             };
+            var blobConnectionString = Environment.GetEnvironmentVariable("STORAGE_CONNECTION_STRING");
             var blobConfig = new BlobConfig()
             {
-                ConnectionString = queueConnectionString
+                ConnectionString = blobConnectionString
             };
 
             // Register your services here

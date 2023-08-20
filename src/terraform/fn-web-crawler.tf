@@ -20,6 +20,7 @@ resource "azurerm_linux_function_app" "web_crawler" {
     "WEBSITE_RUN_FROM_PACKAGE"       = 1
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.main.instrumentation_key
     "STORAGE_CONNECTION_STRING"      = azurerm_storage_account.web_crawler.primary_connection_string
+    "QUEUE_CONNECTION_STRING"        = azurerm_storage_account.queue.primary_connection_string
   }
 
   identity {

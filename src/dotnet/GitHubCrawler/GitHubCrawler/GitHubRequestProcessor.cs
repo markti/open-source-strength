@@ -35,5 +35,12 @@ namespace GitHubCrawler
             var dataRequest = JsonConvert.DeserializeObject<ProcessRepositoryPageRequest>(queueMessage);
             _bulkRequestProcessor.ProcessPullRequestPageRequest(dataRequest);
         }
+        [FunctionName("user-contributions")]
+        public void ProcessUserContributions([QueueTrigger(QueueNames.GITHUB_USER_PROVIDER, Connection = "STORAGE_CONNECTION_STRING")] string queueMessage)
+        {
+            _logger.LogInformation("Reading Pull Request Page Request Queue Item");
+            var dataRequest = JsonConvert.DeserializeObject<ProcessGitHubUserProviderRequest>(queueMessage);
+            _bulkRequestProcessor.ProcessGitHubUserRequest(dataRequest);
+        }
     }
 }

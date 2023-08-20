@@ -22,6 +22,7 @@ resource "azurerm_linux_function_app" "github_crawler" {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.main.instrumentation_key
     "GITHUB_PAT_TOKEN"               = var.github_pat_token
     "STORAGE_CONNECTION_STRING"      = azurerm_storage_account.github_crawler.primary_connection_string
+    "QUEUE_CONNECTION_STRING"        = azurerm_storage_account.queue.primary_connection_string
   }
 
   identity {
@@ -41,10 +42,4 @@ resource "azurerm_storage_account" "github_crawler" {
 resource "azurerm_storage_queue" "github_repo_pull_request" {
   name                 = "pull-request-page"
   storage_account_name = azurerm_storage_account.github_crawler.name
-}
-
-resource "azurerm_storage_container" "github_crawler_pull_requests" {
-  name                  = "pull-requests"
-  storage_account_name  = azurerm_storage_account.github_crawler.name
-  container_access_type = "private"
 }

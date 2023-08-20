@@ -71,5 +71,16 @@ namespace GitHubCrawler.Services
                 await _fanoutRequestProcessor.ProcessRepoPullRequestHistoryAsync(nextPageRequest);
             }
         }
+
+        public async Task ProcessGitHubUserContributionRequest(ProcessGitHubUserProviderRequest userRequest)
+        {
+            var currentPageNumber = 1;
+
+            var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
+            var blobContainerClient = blobServiceClient.GetBlobContainerClient(BlobContainerNames.PULL_REQUESTS);
+
+            var blobName = $"{userRequest.Owner}/{userRequest.Repo}/{currentPageNumber}.json";
+            var blobClient = blobContainerClient.GetBlobClient(blobName);
+        }
     }
 }

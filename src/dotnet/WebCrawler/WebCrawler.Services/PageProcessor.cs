@@ -19,15 +19,18 @@ public class PageProcessor : IPageProcessor
     private const string GITHUB_USER_REGEX = @"https://github\.com/([^/]+)";
     private const string OPEN_TF_URL = "https://raw.githubusercontent.com/opentffoundation/manifesto/main/index.html";
     private readonly BlobConfig _blobConfig;
+    private readonly IFanoutRequestProcessor _fanoutRequestProcessor;
 
     public PageProcessor(
             ILogger<PageProcessor> logger,
-            BlobConfig blobConfig)
+            BlobConfig blobConfig,
+            IFanoutRequestProcessor fanoutRequestProcessor)
     {
         _logger = logger;
         var telemetryConfig = TelemetryConfiguration.CreateDefault();
         _telemetryClient = new TelemetryClient(telemetryConfig);
         _blobConfig = blobConfig;
+        _fanoutRequestProcessor = fanoutRequestProcessor;
     }
 
     public async Task<CosignerSummary> ProcessPageAsync()
@@ -65,6 +68,8 @@ public class PageProcessor : IPageProcessor
                 {
                     string username = match.Groups[1].Value;
                     newCosigner.GitHubUserName = username;
+
+                    await _fanoutRequestProcessor.ProcessGitHubUserAsync(username);
                 }
 
                 cosigners.Add(newCosigner);
