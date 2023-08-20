@@ -8,7 +8,7 @@ namespace WebCrawler.Model
         public int IndividualCount { get; set; }
         public int TotalCount { get; set; }
 
-        public int ActiveGitHubUsers { get; set; }
+        public int ActiveGitHubUsersCount { get; set; }
 
         public List<Cosigner> Cosigners { get; set; }
     }
