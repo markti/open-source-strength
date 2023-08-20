@@ -9,8 +9,7 @@ resource "azurerm_linux_function_app" "github_crawler" {
 
   site_config {
     application_stack {
-      dotnet_version              = "6.0"
-      use_dotnet_isolated_runtime = true
+      dotnet_version = "6.0"
     }
     cors {
       allowed_origins     = ["https://portal.azure.com"]
