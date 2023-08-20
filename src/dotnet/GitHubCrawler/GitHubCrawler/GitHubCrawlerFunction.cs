@@ -22,7 +22,7 @@ namespace GitHubCrawler
             _gitHubQueryService = myService;
         }
 
-        [FunctionName("GitHubCrawler")]
+        [FunctionName("github-repo")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "github/{owner}/{repo}")] HttpRequest req, string owner, string repo)
         {
