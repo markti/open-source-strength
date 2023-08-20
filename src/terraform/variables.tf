@@ -7,3 +7,7 @@ variable "environment_name" {
 variable "location" {
   type = string
 }
+variable "github_pat_token" {
+  type      = string
+  sensitive = true
+}
