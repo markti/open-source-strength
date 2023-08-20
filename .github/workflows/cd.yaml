@@ -124,6 +124,7 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     outputs:
+      web_crawler_function_name: ${{ steps.apply.outputs.web_crawler_function_name }}
       github_crawler_function_name: ${{ steps.apply.outputs.github_crawler_function_name }}
       resource_group_name: ${{ steps.apply.outputs.resource_group_name }}
     steps:
