@@ -126,7 +126,7 @@ namespace GitHubCrawler.Services
 
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(pullRequestsCount.ToString()));
             await blobClient.UploadAsync(stream, overwrite: true);
-            /*
+            
             if(pullRequestsCount > 0)
             {
                 var eventProperties = new Dictionary<string, string>();
@@ -136,7 +136,7 @@ namespace GitHubCrawler.Services
                 eventProperties.Add("pull-request-count", pullRequestsCount.ToString());
 
                 _telemetryClient.TrackEvent("actual-contributor", eventProperties);
-            }*/
+            }
         }
     }
 }
