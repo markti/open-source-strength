@@ -17,7 +17,7 @@ resource "azurerm_storage_queue" "github_user" {
   storage_account_name = azurerm_storage_account.queue.name
 }
 
-resource "azurerm_storage_queue" "github_user" {
+resource "azurerm_storage_queue" "github_user_provider" {
   name                 = "github-user-provider"
   storage_account_name = azurerm_storage_account.queue.name
 }
