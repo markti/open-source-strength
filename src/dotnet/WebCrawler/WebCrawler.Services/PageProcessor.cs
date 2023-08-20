@@ -53,6 +53,7 @@ public class PageProcessor : IPageProcessor
             summary.CompanyCount = cosigners.Where(f => f.EntityType == "Company").Count();
             summary.ProjectCount = cosigners.Where(f => f.EntityType == "Project").Count();
             summary.IndividualCount = cosigners.Where(f => f.EntityType == "Individual").Count();
+            summary.ActiveGitHubUsers = cosigners.Where(f => !string.IsNullOrEmpty(f.GitHubUserName)).Count();
 
             summary.Cosigners = cosigners;
         }
