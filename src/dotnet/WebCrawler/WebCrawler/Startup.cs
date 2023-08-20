@@ -1,11 +1,11 @@
-﻿using GitHubCrawler.Services;
-using GitHubCrawler.Services.Interfaces;
+﻿using WebCrawler.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using WebCrawler.Model;
 
-[assembly: FunctionsStartup(typeof(GitHubCrawler.Startup))]
+[assembly: FunctionsStartup(typeof(WebCrawler.Startup))]
 
 namespace WebCrawler
 {
