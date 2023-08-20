@@ -76,6 +76,13 @@ namespace GitHubCrawler.Services
 
         public async Task ProcessGitHubUserContributionRequest(ProcessGitHubUserProviderRequest userRequest)
         {
+            var eventProperties = new Dictionary<string, string>();
+            eventProperties.Add("owner", userRequest.Owner);
+            eventProperties.Add("repo", userRequest.Repo);
+            eventProperties.Add("username", userRequest.UserName);
+
+            _telemetryClient.TrackEvent("user");
+
             var matchingPullRequests = 0;
             var currentPageNumber = 1;
             var shouldContinue = true;
