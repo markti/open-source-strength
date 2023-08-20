@@ -126,6 +126,7 @@ namespace GitHubCrawler.Services
 
         private async Task SaveUserContribution(ProcessGitHubUserProviderRequest userRequest, int pullRequestsCount)
         {
+            _logger.LogInformation($"User {userRequest.UserName} has {pullRequestsCount} for {userRequest.Owner}/{userRequest.Repo}");
             var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
             var blobContainerClient = blobServiceClient.GetBlobContainerClient(BlobContainerNames.USERS);
 
