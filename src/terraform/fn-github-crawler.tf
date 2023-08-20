@@ -50,3 +50,17 @@ resource "azurerm_storage_container" "github_crawler_users" {
   storage_account_name  = azurerm_storage_account.github_crawler.name
   container_access_type = "private"
 }
+
+resource "azurerm_storage_container" "github_crawler_companies" {
+  name                  = "companies"
+  storage_account_name  = azurerm_storage_account.github_crawler.name
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_blob" "spacelift" {
+  name                   = "spacelift.txt"
+  storage_account_name   = azurerm_storage_account.github_crawler.name
+  storage_container_name = azurerm_storage_container.companies.name
+  type                   = "Block"
+  source                 = "./files/spacelift.txt"
+}
