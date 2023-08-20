@@ -52,6 +52,13 @@ namespace GitHubCrawler.Services
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(pageData));
             await blobClient.UploadAsync(stream, overwrite: true);
 
+            var eventProperties = new Dictionary<string, string>();
+            eventProperties.Add("owner", repoPageRequest.Owner);
+            eventProperties.Add("repo", repoPageRequest.Repo);
+            eventProperties.Add("page", repoPageRequest.PageNumber.ToString());
+
+            _telemetryClient.TrackEvent("github-pull-request-page", eventProperties);
+
             // if we have items that come back, do another page
             if (list.Count > 0)
             {
