@@ -13,9 +13,9 @@ resource "azurerm_linux_function_app" "github_crawler" {
   }
 
   app_settings = {
-    WEBSITE_RUN_FROM_PACKAGE       = 1
-    APPINSIGHTS_INSTRUMENTATIONKEY = azurerm_application_insights.main.instrumentation_key
-    GITHUB_PAT_TOKEN               = var.github_pat_token
+    "WEBSITE_RUN_FROM_PACKAGE"       = 1
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.main.instrumentation_key
+    "GITHUB_PAT_TOKEN"               = var.github_pat_token
   }
 
   identity {
