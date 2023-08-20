@@ -7,7 +7,7 @@ on:
     paths:
       - 'src/terraform/**'
       - 'src/dotnet/GitHubCrawler/**'
-      - '.github/workflows/**'
+      - '.github/workflows/github-crawler*.yaml'
 
 env:
   WORKING_DIRECTORY: "src/terraform/"
