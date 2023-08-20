@@ -22,8 +22,8 @@ namespace GitHubCrawler
             _gitHubQueryService = myService;
         }
 
-        [FunctionName("github-repo")]
-        public async Task<IActionResult> Run(
+        [FunctionName("github-repo-report-generate")]
+        public async Task<IActionResult> GenerateGitHubRepoReport(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "github")] HttpRequest req)
         {
             _logger.LogInformation($"C# HTTP trigger function processed a request.");
