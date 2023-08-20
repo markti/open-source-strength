@@ -102,6 +102,7 @@ namespace GitHubCrawler.Services
                     var pullRequestsInCurrentBatch = prSummary.Where(f => f.UserName == userRequest.UserName).Count();
                     matchingPullRequests += pullRequestsInCurrentBatch;
                 }
+                currentPageNumber++;
             }
 
             await SaveUserContribution(userRequest, matchingPullRequests);
