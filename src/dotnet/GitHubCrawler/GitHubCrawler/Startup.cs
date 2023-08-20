@@ -13,7 +13,6 @@ namespace GitHubCrawler
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddHttpClient();
             builder.Services.AddLogging(loggingBuilder =>
             {
                 loggingBuilder.AddApplicationInsights();
