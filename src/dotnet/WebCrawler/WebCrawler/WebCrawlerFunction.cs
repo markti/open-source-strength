@@ -7,25 +7,28 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using WebCrawler.Services.Interfaces;
 
 namespace WebCrawler
 {
     public class WebCrawlerFunction
     {
         private readonly ILogger<WebCrawlerFunction> _logger;
+        private readonly IPageProcessor _pageProcessor;
 
-        public WebCrawlerFunction(ILogger<WebCrawlerFunction> logger)
+        public WebCrawlerFunction(ILogger<WebCrawlerFunction> logger, IPageProcessor pageProcessor)
         {
             _logger = logger;
+            _pageProcessor = pageProcessor;
         }
 
         [FunctionName("page-crawler")]
         public async Task<IActionResult> CrawlPage(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "page")] HttpRequest req)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            var results = await _pageProcessor.ProcessPageAsync();
 
-            return new OkResult();
+            return new OkObjectResult(results);
         }
     }
 }

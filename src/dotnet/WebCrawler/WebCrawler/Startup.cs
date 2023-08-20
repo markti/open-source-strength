@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using WebCrawler.Model;
+using WebCrawler.Services.Interfaces;
 
 [assembly: FunctionsStartup(typeof(WebCrawler.Startup))]
 
@@ -31,6 +32,7 @@ namespace WebCrawler
             // Configuration for Queue
             builder.Services.AddSingleton<QueueConfig>(queueConfig);
             builder.Services.AddSingleton<BlobConfig>(blobConfig);
+            builder.Services.AddSingleton<IPageProcessor, PageProcessor>();
         }
     }
 }

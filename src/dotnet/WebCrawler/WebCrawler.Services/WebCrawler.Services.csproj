@@ -9,4 +9,10 @@
   <ItemGroup>
     <ProjectReference Include="..\WebCrawler.Model\WebCrawler.Model.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
 </Project>
