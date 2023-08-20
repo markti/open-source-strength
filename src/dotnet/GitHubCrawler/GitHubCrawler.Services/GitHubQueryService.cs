@@ -13,7 +13,7 @@ public class GitHubQueryService : IGitHubQueryService
         _patToken = patToken;
     }
 
-    public async Task<List<PullRequestSummary>> GetPullRequestHistory(string ownerName, string repoName, int startPage)
+    public async Task<List<PullRequestSummary>> GetPullRequestHistory(ProcessRepositoryPageRequest repoPageRequest)
     {
         var client = new GitHubClient(new ProductHeaderValue("OpenSourceStrength"));
         client.Credentials = new Credentials(_patToken);
@@ -26,11 +26,11 @@ public class GitHubQueryService : IGitHubQueryService
         {
             PageCount = 1,
             PageSize = 100,
-            StartPage = startPage
+            StartPage = repoPageRequest.PageNumber
         };
 
         // Get the first page of commits
-        var pullRequests = await client.PullRequest.GetAllForRepository(ownerName, repoName, request, apiOptions);
+        var pullRequests = await client.PullRequest.GetAllForRepository(repoPageRequest.Owner, repoPageRequest.Repo, request, apiOptions);
 
         var mergedPRsByUser = pullRequests.Where(pr => pr.Merged).ToList();
 
