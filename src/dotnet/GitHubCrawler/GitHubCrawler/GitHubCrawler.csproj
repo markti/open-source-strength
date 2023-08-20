@@ -3,6 +3,17 @@
     <TargetFramework>net6.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
   </PropertyGroup>
+  <!-- 
+    Azure Functions executing in In-process mode is currently incompatible with
+    System.Diagnostics.DiagnosticSource 7.0.0.
+
+    Adding FunctionsPreservedDependencies is required to ensure that the
+    Azure Functions runtime uses the version of System.Diagnostics.DiagnosticSource
+    this function depends on.
+  -->
+  <ItemGroup>
+    <FunctionsPreservedDependencies Include="Microsoft.Extensions.Http.dll" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
