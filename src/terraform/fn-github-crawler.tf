@@ -60,7 +60,7 @@ resource "azurerm_storage_container" "github_crawler_companies" {
 resource "azurerm_storage_blob" "spacelift" {
   name                   = "spacelift.txt"
   storage_account_name   = azurerm_storage_account.github_crawler.name
-  storage_container_name = azurerm_storage_container.companies.name
+  storage_container_name = azurerm_storage_container.github_crawler_companies.name
   type                   = "Block"
   source                 = "./files/spacelift.txt"
 }
