@@ -26,7 +26,7 @@ namespace GitHubCrawler
 
         [FunctionName("github-repo-pull-request-history")]
         public async Task<IActionResult> GenerateGitHubRepoReport(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "github")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "github/pull-request/history")] HttpRequest req)
         {
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var request = JsonConvert.DeserializeObject<ProcessRepositoryRequest>(requestBody);
