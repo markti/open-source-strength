@@ -40,7 +40,7 @@ namespace GitHubCrawler
         {
             _logger.LogInformation("Reading Pull Request Page Request Queue Item");
             var dataRequest = JsonConvert.DeserializeObject<ProcessGitHubUserProviderRequest>(queueMessage);
-            _bulkRequestProcessor.ProcessGitHubUserRequest(dataRequest);
+            _bulkRequestProcessor.ProcessGitHubUserContributionRequest(dataRequest);
         }
     }
 }
