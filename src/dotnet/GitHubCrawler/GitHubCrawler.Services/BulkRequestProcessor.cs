@@ -145,6 +145,16 @@ namespace GitHubCrawler.Services
 
                 _telemetryClient.TrackEvent("actual-contributor", eventProperties);
             }
+            else
+            {
+                var eventProperties = new Dictionary<string, string>();
+                eventProperties.Add("owner", userRequest.Owner);
+                eventProperties.Add("repo", userRequest.Repo);
+                eventProperties.Add("username", userRequest.UserName);
+                eventProperties.Add("pull-request-count", pullRequestsCount.ToString());
+
+                _telemetryClient.TrackEvent("non-contributor", eventProperties);
+            }
         }
     }
 }
