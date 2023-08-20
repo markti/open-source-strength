@@ -9,6 +9,7 @@ using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace GitHubCrawler.Services
 {
@@ -87,22 +88,29 @@ namespace GitHubCrawler.Services
                 var blobName = $"{userRequest.Owner}/{userRequest.Repo}/{currentPageNumber}.json";
                 var blobClient = blobContainerClient.GetBlobClient(blobName);
 
-                BlobDownloadResult downloadResult = await blobClient.DownloadContentAsync();
-                string blobContents = downloadResult.Content.ToString();
-
-                // Deserialize blob contents to FooBar object
-                var prSummary = JsonConvert.DeserializeObject<List<PullRequestSummary>>(blobContents);
-
-                if(prSummary == null)
+                var blobExists = (await blobClient.ExistsAsync()).Value;
+                if (!blobExists)
                 {
                     shouldContinue = false;
                 }
                 else
                 {
-                    var pullRequestsInCurrentBatch = prSummary.Where(f => f.UserName == userRequest.UserName).Count();
-                    matchingPullRequests += pullRequestsInCurrentBatch;
+                    BlobDownloadResult downloadResult = await blobClient.DownloadContentAsync();
+                    string blobContents = downloadResult.Content.ToString();
+
+                    // Deserialize blob contents to FooBar object
+                    var prSummary = JsonConvert.DeserializeObject<List<PullRequestSummary>>(blobContents);
+
+                    if (prSummary == null)
+                    {
+                    }
+                    else
+                    {
+                        var pullRequestsInCurrentBatch = prSummary.Where(f => f.UserName == userRequest.UserName).Count();
+                        matchingPullRequests += pullRequestsInCurrentBatch;
+                    }
+                    currentPageNumber++;
                 }
-                currentPageNumber++;
             }
 
             await SaveUserContribution(userRequest, matchingPullRequests);
