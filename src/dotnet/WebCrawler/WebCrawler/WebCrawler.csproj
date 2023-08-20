@@ -40,5 +40,8 @@
     <ProjectReference Include="..\WebCrawler.Services\WebCrawler.Services.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+    <ProjectReference Include="..\WebCrawler.Model\WebCrawler.Model.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 </Project>

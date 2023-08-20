@@ -22,9 +22,9 @@ namespace WebCrawler
             _pageProcessor = pageProcessor;
         }
 
-        [FunctionName("page-crawler")]
+        [FunctionName("web-crawler")]
         public async Task<IActionResult> CrawlPage(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "page")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "web-crawler-start")] HttpRequest req)
         {
             var results = await _pageProcessor.ProcessPageAsync();
 
