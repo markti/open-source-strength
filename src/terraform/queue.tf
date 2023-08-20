@@ -7,10 +7,9 @@ resource "azurerm_storage_account" "queue" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_storage_container" "github_crawler_pull_requests" {
-  name                  = "pull-requests"
-  storage_account_name  = azurerm_storage_account.queue.name
-  container_access_type = "private"
+resource "azurerm_storage_queue" "github_repo_pull_request" {
+  name                 = "pull-request-page"
+  storage_account_name = azurerm_storage_account.queue.name
 }
 
 resource "azurerm_storage_queue" "github_user" {
