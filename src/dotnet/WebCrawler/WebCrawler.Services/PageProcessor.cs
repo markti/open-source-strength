@@ -1,12 +1,14 @@
 ﻿using HtmlAgilityPack;
 using System;
+using System.Text.RegularExpressions;
 using WebCrawler.Model;
 using WebCrawler.Services.Interfaces;
 
 namespace WebCrawler.Services;
 public class PageProcessor : IPageProcessor
 {
-    private const string targetUrl = "https://raw.githubusercontent.com/opentffoundation/manifesto/main/index.html";
+    private const string GITHUB_USER_REGEX = @"https://github\.com/([^/]+)";
+    private const string OPEN_TF_URL = "https://raw.githubusercontent.com/opentffoundation/manifesto/main/index.html";
 
     public async Task<CosignerSummary> ProcessPageAsync()
     {
@@ -15,7 +17,7 @@ public class PageProcessor : IPageProcessor
         List<Cosigner> cosigners = new List<Cosigner>();
         var httpClient = new HttpClient();
 
-        string htmlContent = await httpClient.GetStringAsync(targetUrl);
+        string htmlContent = await httpClient.GetStringAsync(OPEN_TF_URL);
 
         var htmlDocument = new HtmlDocument();
         htmlDocument.LoadHtml(htmlContent);
@@ -37,6 +39,13 @@ public class PageProcessor : IPageProcessor
                 newCosigner.Name = cosignerAnchor.InnerText;
                 newCosigner.EntityType = cells.ElementAt(1).InnerText;
                 newCosigner.SupportOffered = cells.ElementAt(2).InnerText;
+
+                Match match = Regex.Match(newCosigner.Url, GITHUB_USER_REGEX);
+                if (match.Success)
+                {
+                    string username = match.Groups[1].Value;
+                    newCosigner.GitHubUserName = username;
+                }
 
                 cosigners.Add(newCosigner);
             }

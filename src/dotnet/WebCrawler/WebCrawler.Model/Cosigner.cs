@@ -7,5 +7,6 @@ namespace WebCrawler.Model
         public string Name { get; set; }
         public string EntityType { get; set; }
         public string SupportOffered { get; set; }
+        public string GitHubUserName { get; set; }
     }
 }
