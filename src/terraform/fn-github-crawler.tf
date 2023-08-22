@@ -64,3 +64,37 @@ resource "azurerm_storage_blob" "spacelift" {
   type                   = "Block"
   source                 = "./files/spacelift.txt"
 }
+resource "azurerm_storage_blob" "env0" {
+  name                   = "env0.txt"
+  storage_account_name   = azurerm_storage_account.github_crawler.name
+  storage_container_name = azurerm_storage_container.github_crawler_companies.name
+  type                   = "Block"
+  source                 = "./files/env0.txt"
+}
+resource "azurerm_storage_blob" "digger" {
+  name                   = "digger.txt"
+  storage_account_name   = azurerm_storage_account.github_crawler.name
+  storage_container_name = azurerm_storage_container.github_crawler_companies.name
+  type                   = "Block"
+  source                 = "./files/digger.txt"
+}
+resource "azurerm_storage_blob" "scalr" {
+  name                   = "scalr.txt"
+  storage_account_name   = azurerm_storage_account.github_crawler.name
+  storage_container_name = azurerm_storage_container.github_crawler_companies.name
+  type                   = "Block"
+  source                 = "./files/scalr.txt"
+}
+resource "azurerm_storage_blob" "terragrunt" {
+  name                   = "terragrunt.txt"
+  storage_account_name   = azurerm_storage_account.github_crawler.name
+  storage_container_name = azurerm_storage_container.github_crawler_companies.name
+  type                   = "Block"
+  source                 = "./files/terragrunt.txt"
+}
+
+resource "azurerm_storage_container" "pages" {
+  name                  = "pages"
+  storage_account_name  = azurerm_storage_account.github_crawler_companies.name
+  container_access_type = "private"
+}
