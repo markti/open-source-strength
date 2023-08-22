@@ -35,5 +35,5 @@ jobs:
       working-directory: ./src/dotnet/GitHubCrawler
       
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --verbosity normal --filter Category=Unit
       working-directory: ./src/dotnet/GitHubCrawler

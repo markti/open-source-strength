@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Azure.Storage.Queues.Models;
 using GitHubCrawler.Model;
 using GitHubCrawler.Services;
@@ -33,18 +34,27 @@ namespace GitHubCrawler
         }
 
         [FunctionName("pull-request-page")]
-        public void Run([QueueTrigger(QueueNames.PULL_REQUEST_PAGE_QUEUE_NAME, Connection = "QUEUE_CONNECTION_STRING")]string queueMessage)
+        public async Task Run([QueueTrigger(QueueNames.PULL_REQUEST_PAGE_QUEUE_NAME, Connection = "QUEUE_CONNECTION_STRING")]string queueMessage)
         {
             _logger.LogInformation("Reading Pull Request Page Request Queue Item");
             var dataRequest = JsonConvert.DeserializeObject<ProcessRepositoryPageRequest>(queueMessage);
-            _bulkRequestProcessor.ProcessPullRequestPageRequest(dataRequest);
+            await _bulkRequestProcessor.ProcessPullRequestPageRequest(dataRequest);
         }
         [FunctionName("user-contributions")]
-        public void ProcessUserContributions([QueueTrigger(QueueNames.GITHUB_USER_PROVIDER, Connection = "QUEUE_CONNECTION_STRING")] string queueMessage)
+        public async Task ProcessUserContributions([QueueTrigger(QueueNames.GITHUB_USER_PROVIDER, Connection = "QUEUE_CONNECTION_STRING")] string queueMessage)
         {
             _logger.LogInformation("Reading Pull Request Page Request Queue Item");
             var dataRequest = JsonConvert.DeserializeObject<ProcessGitHubUserProviderRequest>(queueMessage);
-            _bulkRequestProcessor.ProcessGitHubUserContributionRequest(dataRequest);
+            var matchingPullRequests = await _bulkRequestProcessor.ProcessGitHubUserContributionRequest(dataRequest);
+
+            if (matchingPullRequests > 0)
+            {
+                var blobName = $"{dataRequest.UserName}/{dataRequest.Owner}/{dataRequest.Repo}.json";
+                var blobContent = matchingPullRequests.ToString();
+                _logger.LogInformation($"User Contributor {dataRequest.UserName} has {matchingPullRequests} PRs for {dataRequest.Owner}/{dataRequest.Repo}");
+
+                await _bulkRequestProcessor.SaveAsync(BlobContainerNames.USERS, blobName, blobContent);
+            }
         }
     }
 }

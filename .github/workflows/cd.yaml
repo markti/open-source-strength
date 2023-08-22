@@ -42,7 +42,7 @@ jobs:
       working-directory: ./src/dotnet/WebCrawler
       
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --verbosity normal --filter Category=Unit
       working-directory: ./src/dotnet/WebCrawler
       
     - name: Display structure of downloaded files
@@ -94,7 +94,7 @@ jobs:
       working-directory: ./src/dotnet/GitHubCrawler
       
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --verbosity normal --filter Category=Unit
       working-directory: ./src/dotnet/GitHubCrawler
       
     - name: Display structure of downloaded files

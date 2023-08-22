@@ -74,7 +74,7 @@ namespace GitHubCrawler.Services
             }
         }
 
-        public async Task ProcessGitHubUserContributionRequest(ProcessGitHubUserProviderRequest userRequest)
+        public async Task<int> ProcessGitHubUserContributionRequest(ProcessGitHubUserProviderRequest userRequest)
         {
             var eventProperties = new Dictionary<string, string>();
             eventProperties.Add("owner", userRequest.Owner);
@@ -121,46 +121,66 @@ namespace GitHubCrawler.Services
                 }
             }
 
-            if(matchingPullRequests > 0)
-            {
-                await SaveUserContribution(userRequest, matchingPullRequests);
-            }
+            return matchingPullRequests;
         }
 
-        private async Task SaveUserContribution(ProcessGitHubUserProviderRequest userRequest, int pullRequestsCount)
+        public async Task<int> ProcessPullRequestTotal(string owner, string repo)
         {
-            _logger.LogInformation($"User Contributor {userRequest.UserName} has {pullRequestsCount} for {userRequest.Owner}/{userRequest.Repo}");
-            var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
-            var blobContainerClient = blobServiceClient.GetBlobContainerClient(BlobContainerNames.USERS);
+            var eventProperties = new Dictionary<string, string>();
+            eventProperties.Add("owner", owner);
+            eventProperties.Add("repo", repo);
 
-            var blobName = $"{userRequest.UserName}/{userRequest.Owner}/{userRequest.Repo}.json";
+            _telemetryClient.TrackEvent("repo", eventProperties);
+
+            var matchingPullRequests = 0;
+            var currentPageNumber = 1;
+            var shouldContinue = true;
+
+            var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
+            var blobContainerClient = blobServiceClient.GetBlobContainerClient(BlobContainerNames.PULL_REQUESTS);
+
+            while (shouldContinue)
+            {
+                var blobName = $"{owner}/{repo}/{currentPageNumber}.json";
+                var blobClient = blobContainerClient.GetBlobClient(blobName);
+
+                var blobExistsResult = (await blobClient.ExistsAsync()).Value;
+                if (!blobExistsResult)
+                {
+                    shouldContinue = false;
+                }
+                else
+                {
+                    BlobDownloadResult downloadResult = await blobClient.DownloadContentAsync();
+                    string blobContents = downloadResult.Content.ToString();
+
+                    // Deserialize blob contents to FooBar object
+                    var prSummary = JsonConvert.DeserializeObject<List<PullRequestSummary>>(blobContents);
+
+                    if (prSummary == null)
+                    {
+                    }
+                    else
+                    {
+                        var pullRequestsInCurrentBatch = prSummary.Count();
+                        matchingPullRequests += pullRequestsInCurrentBatch;
+                    }
+                    currentPageNumber++;
+                }
+            }
+
+            return matchingPullRequests;
+        }
+
+        public async Task SaveAsync(string containerName, string blobName, string blobContent)
+        {
+            var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
+            var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
             var blobClient = blobContainerClient.GetBlobClient(blobName);
 
-            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(pullRequestsCount.ToString()));
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(blobContent));
             await blobClient.UploadAsync(stream, overwrite: true);
-            
-            if(pullRequestsCount > 0)
-            {
-                var eventProperties = new Dictionary<string, string>();
-                eventProperties.Add("owner", userRequest.Owner);
-                eventProperties.Add("repo", userRequest.Repo);
-                eventProperties.Add("username", userRequest.UserName);
-                eventProperties.Add("pull-request-count", pullRequestsCount.ToString());
-
-                _telemetryClient.TrackEvent("actual-contributor", eventProperties);
-
-                _telemetryClient.TrackMetric("actual-contribution", pullRequestsCount);
-            }
-            else
-            {
-                var eventProperties = new Dictionary<string, string>();
-                eventProperties.Add("owner", userRequest.Owner);
-                eventProperties.Add("repo", userRequest.Repo);
-                eventProperties.Add("username", userRequest.UserName);
-                eventProperties.Add("pull-request-count", pullRequestsCount.ToString());
-
-                _telemetryClient.TrackEvent("non-contributor", eventProperties);
-            }
         }
     }
 }
