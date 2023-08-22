@@ -16,11 +16,15 @@ namespace WebCrawler.Services
         private readonly QueueConfig _queueConfig;
         private readonly IGitHubProjectService _gitHubProjectService;
 
-        public FanoutRequestProcessor(ILogger<FanoutRequestProcessor> log, QueueConfig queueConfig, IGitHubProjectService gitHubProjectService)
+        public FanoutRequestProcessor(
+            ILogger<FanoutRequestProcessor> log,
+            TelemetryConfiguration telemetryConfiguration,
+            QueueConfig queueConfig,
+            IGitHubProjectService gitHubProjectService
+            )
         {
             _logger = log;
-            var telemetryConfig = TelemetryConfiguration.CreateDefault();
-            _telemetryClient = new TelemetryClient(telemetryConfig);
+            _telemetryClient = new TelemetryClient(telemetryConfiguration);
             _queueConfig = queueConfig;
             _gitHubProjectService = gitHubProjectService;
         }

@@ -23,12 +23,12 @@ public class PageProcessor : IPageProcessor
 
     public PageProcessor(
             ILogger<PageProcessor> logger,
+            TelemetryConfiguration telemetryConfiguration,
             BlobConfig blobConfig,
             IFanoutRequestProcessor fanoutRequestProcessor)
     {
         _logger = logger;
-        var telemetryConfig = TelemetryConfiguration.CreateDefault();
-        _telemetryClient = new TelemetryClient(telemetryConfig);
+        _telemetryClient = new TelemetryClient(telemetryConfiguration);
         _blobConfig = blobConfig;
         _fanoutRequestProcessor = fanoutRequestProcessor;
     }

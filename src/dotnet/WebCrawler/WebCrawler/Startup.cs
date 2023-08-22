@@ -14,12 +14,6 @@ namespace WebCrawler
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddLogging(loggingBuilder =>
-            {
-                loggingBuilder.AddApplicationInsights();
-            });
-            builder.Services.AddApplicationInsightsTelemetry();
-
             var queueConnectionString = Environment.GetEnvironmentVariable("QUEUE_CONNECTION_STRING");
             var queueConfig = new QueueConfig()
             {
