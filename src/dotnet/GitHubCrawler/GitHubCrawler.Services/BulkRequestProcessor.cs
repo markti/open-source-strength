@@ -81,7 +81,7 @@ namespace GitHubCrawler.Services
             eventProperties.Add("repo", userRequest.Repo);
             eventProperties.Add("username", userRequest.UserName);
 
-            _telemetryClient.TrackEvent("user");
+            _telemetryClient.TrackEvent("user", eventProperties);
 
             var matchingPullRequests = 0;
             var currentPageNumber = 1;
@@ -148,6 +148,8 @@ namespace GitHubCrawler.Services
                 eventProperties.Add("pull-request-count", pullRequestsCount.ToString());
 
                 _telemetryClient.TrackEvent("actual-contributor", eventProperties);
+
+                _telemetryClient.TrackMetric("actual-contribution", pullRequestsCount);
             }
             else
             {
