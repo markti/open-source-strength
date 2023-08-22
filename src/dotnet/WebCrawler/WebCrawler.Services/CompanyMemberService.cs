@@ -31,7 +31,7 @@ namespace WebCrawler.Services
             var memberList = new List<string>();
             var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
             var blobContainerClient = blobServiceClient.GetBlobContainerClient(BlobContainerNames.COMPANIES);
-            var blobName = companyName.ToLower();
+            var blobName = $"{companyName.ToLower()}.txt";
             var blobClient = blobContainerClient.GetBlobClient(blobName);
 
             var blobExistsResult = await blobClient.ExistsAsync();
@@ -45,7 +45,10 @@ namespace WebCrawler.Services
 
                 foreach(var item in splitMembers)
                 {
-                    memberList.Add(item);
+                    if(!string.IsNullOrEmpty(item))
+                    {
+                        memberList.Add(item);
+                    }
                 }
             }
 
