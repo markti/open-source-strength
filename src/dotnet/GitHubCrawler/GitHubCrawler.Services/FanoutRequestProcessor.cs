@@ -15,11 +15,14 @@ namespace GitHubCrawler.Services
         private readonly ILogger<FanoutRequestProcessor> _logger;
         private readonly QueueConfig _queueConfig;
 
-        public FanoutRequestProcessor(ILogger<FanoutRequestProcessor> log, QueueConfig queueConfig)
+        public FanoutRequestProcessor(
+            ILogger<FanoutRequestProcessor> log,
+            TelemetryConfiguration telemetryConfiguration,
+            QueueConfig queueConfig
+            )
         {
             _logger = log;
-            var telemetryConfig = TelemetryConfiguration.CreateDefault();
-            _telemetryClient = new TelemetryClient(telemetryConfig);
+            _telemetryClient = new TelemetryClient(telemetryConfiguration);
             _queueConfig = queueConfig;
         }
 

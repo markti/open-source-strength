@@ -24,6 +24,7 @@ namespace GitHubCrawler.Services
 
         public BulkRequestProcessor(
             ILogger<BulkRequestProcessor> logger,
+            TelemetryConfiguration telemetryConfiguration,
             QueueConfig queueConfig,
             BlobConfig blobConfig,
             IFanoutRequestProcessor fanoutRequestProcessor,
@@ -31,8 +32,7 @@ namespace GitHubCrawler.Services
             )
         {
             _logger = logger;
-            var telemetryConfig = TelemetryConfiguration.CreateDefault();
-            _telemetryClient = new TelemetryClient(telemetryConfig);
+            _telemetryClient = new TelemetryClient(telemetryConfiguration);
             _queueConfig = queueConfig;
             _blobConfig = blobConfig;
             _fanoutRequestProcessor = fanoutRequestProcessor;

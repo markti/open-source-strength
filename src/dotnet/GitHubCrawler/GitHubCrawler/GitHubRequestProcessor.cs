@@ -19,11 +19,15 @@ namespace GitHubCrawler
         private readonly IBulkRequestProcessor _bulkRequestProcessor;
         private readonly QueueConfig _queueConfig;
 
-        public GitHubRequestProcessor(ILogger<GitHubRequestProcessor> logger, IBulkRequestProcessor bulkRequestProcessor, QueueConfig queueConfig)
+        public GitHubRequestProcessor(
+            ILogger<GitHubRequestProcessor> logger,
+            TelemetryConfiguration telemetryConfiguration,
+            IBulkRequestProcessor bulkRequestProcessor,
+            QueueConfig queueConfig
+            )
         {
             _logger = logger;
-            var telemetryConfig = TelemetryConfiguration.CreateDefault();
-            _telemetryClient = new TelemetryClient(telemetryConfig);
+            _telemetryClient = new TelemetryClient(telemetryConfiguration);
             _bulkRequestProcessor = bulkRequestProcessor;
             _queueConfig = queueConfig;
         }
