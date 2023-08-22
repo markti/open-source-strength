@@ -91,6 +91,8 @@ public class PageProcessor : IPageProcessor
                     newCosigner.GitHubUserName = companyMember;
                     newCosigner.SupportOffered = $"{company.Name} Contributor";
 
+                    await _fanoutRequestProcessor.ProcessGitHubUserAsync(companyMember);
+
                     cosigners.Add(newCosigner);
                 }
             }
