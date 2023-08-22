@@ -14,12 +14,6 @@ namespace GitHubCrawler
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddLogging(loggingBuilder =>
-            {
-                loggingBuilder.AddApplicationInsights();
-            });
-            builder.Services.AddApplicationInsightsTelemetry();
-
             var patToken = Environment.GetEnvironmentVariable("GITHUB_PAT_TOKEN");
             var gitHubQueryService = new GitHubQueryService(patToken);
 
