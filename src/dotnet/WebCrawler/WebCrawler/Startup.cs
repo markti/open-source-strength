@@ -27,6 +27,7 @@ namespace WebCrawler
             // Configuration for Queue
             builder.Services.AddSingleton<QueueConfig>(queueConfig);
             builder.Services.AddSingleton<BlobConfig>(blobConfig);
+            builder.Services.AddSingleton<ICompanyMemberService, CompanyMemberService>();
             builder.Services.AddSingleton<IGitHubProjectService, GitHubProjectService>();
             builder.Services.AddSingleton<IFanoutRequestProcessor, FanoutRequestProcessor>();
             builder.Services.AddSingleton<IPageProcessor, PageProcessor>();

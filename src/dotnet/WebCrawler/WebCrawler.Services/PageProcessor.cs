@@ -14,22 +14,26 @@ using Newtonsoft.Json;
 namespace WebCrawler.Services;
 public class PageProcessor : IPageProcessor
 {
-    private readonly TelemetryClient _telemetryClient;
-    private readonly ILogger<PageProcessor> _logger;
     private const string GITHUB_USER_REGEX = @"https://github\.com/([^/]+)";
     private const string OPEN_TF_URL = "https://raw.githubusercontent.com/opentffoundation/manifesto/main/index.html";
+
+    private readonly TelemetryClient _telemetryClient;
+    private readonly ILogger<PageProcessor> _logger;
     private readonly BlobConfig _blobConfig;
+    private readonly ICompanyMemberService _companyMemberService;
     private readonly IFanoutRequestProcessor _fanoutRequestProcessor;
 
     public PageProcessor(
             ILogger<PageProcessor> logger,
             TelemetryConfiguration telemetryConfiguration,
             BlobConfig blobConfig,
+            ICompanyMemberService companyMemberService,
             IFanoutRequestProcessor fanoutRequestProcessor)
     {
         _logger = logger;
         _telemetryClient = new TelemetryClient(telemetryConfiguration);
         _blobConfig = blobConfig;
+        _companyMemberService = companyMemberService;
         _fanoutRequestProcessor = fanoutRequestProcessor;
     }
 
@@ -73,6 +77,22 @@ public class PageProcessor : IPageProcessor
                 }
 
                 cosigners.Add(newCosigner);
+            }
+
+            var allCompanies = cosigners.Where(f => f.EntityType == "Company").ToList();
+            foreach(var company in allCompanies)
+            {
+                var companyMembers = await _companyMemberService.GetCompanyMembers(company.Name);
+                foreach(var companyMember in companyMembers)
+                {
+                    var newCosigner = new Cosigner();
+                    newCosigner.Name = $"{company.Name} Contributor";
+                    newCosigner.EntityType = $"{company.Name}";
+                    newCosigner.GitHubUserName = companyMember;
+                    newCosigner.SupportOffered = $"{company.Name} Contributor";
+
+                    cosigners.Add(newCosigner);
+                }
             }
 
             summary.CompanyCount = cosigners.Where(f => f.EntityType == "Company").Count();

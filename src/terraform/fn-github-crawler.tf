@@ -95,6 +95,6 @@ resource "azurerm_storage_blob" "terragrunt" {
 
 resource "azurerm_storage_container" "pages" {
   name                  = "pages"
-  storage_account_name  = azurerm_storage_account.github_crawler_companies.name
+  storage_account_name  = azurerm_storage_account.github_crawler.name
   container_access_type = "private"
 }
