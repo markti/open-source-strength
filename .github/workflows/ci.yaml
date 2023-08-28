@@ -1,4 +1,4 @@
-name: github-crawler-CI
+name: CI
 
 on:
   push:

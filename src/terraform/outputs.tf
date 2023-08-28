@@ -1,8 +1,5 @@
-output "github_crawler_function_name" {
+output "function_name" {
   value = azurerm_linux_function_app.github_crawler.name
-}
-output "web_crawler_function_name" {
-  value = azurerm_linux_function_app.web_crawler.name
 }
 output "resource_group_name" {
   value = azurerm_resource_group.main.name
