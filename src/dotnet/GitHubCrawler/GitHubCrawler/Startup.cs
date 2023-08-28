@@ -14,6 +14,8 @@ namespace GitHubCrawler
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
+            builder.Services.AddLogging();
+
             var patToken = Environment.GetEnvironmentVariable("GITHUB_PAT_TOKEN");
             var gitHubQueryService = new GitHubQueryService(patToken);
 
