@@ -37,6 +37,11 @@ resource "azurerm_storage_account" "github_crawler" {
   location                 = azurerm_resource_group.main.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+
+  static_website {
+    index_document     = "index.html"
+    error_404_document = "error.html"
+  }
 }
 
 resource "azurerm_storage_container" "github_crawler_pull_requests" {
