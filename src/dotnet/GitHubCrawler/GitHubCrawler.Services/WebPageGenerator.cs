@@ -83,14 +83,6 @@ namespace GitHubCrawler.Services
 
             htmlPageBuilder.AppendLine($"Today is {DateTime.UtcNow.ToShortDateString()}!");
 
-            htmlPageBuilder.AppendLine($"OpenTF was started in reaction to HashiCorp adopting BSL on several of their GitHub repositories. OpenTF has a published manifesto and encourages people to signup and promise to contribute time and/or resources to the project. The main backers of OpenTF are HashiCorp competitors but many of the signers are just regular people. The main grievence of the OpenTF founders is that Terraform should continue to be open source because:");
-            htmlPageBuilder.AppendLine("<ol>");
-            htmlPageBuilder.Append("<li>HashiCorp benefited from 'free labor' that was tricked into contributing to their Open Source projects</li>");
-            htmlPageBuilder.Append("<li>HashiCorp required potential contributors to sign a CLA, essentially ceeding their rights to their contributions under a promise to keep Terraform Open Source</li>");
-            htmlPageBuilder.AppendLine("</ol>");
-
-            htmlPageBuilder.AppendLine("Let's assume we take these claims at face value. Even if these things were true. Who would be impacted? How many people contributed to HashiCorp's projects that signed OpenTF? Will OpenTF actually be able to compete with HashiCorp in maintaining their forked version of Terraform? YOU DECIDE.");
-
             htmlPageBuilder.AppendLine($"<h2>Total Cosigners: {pageSummary.TotalCount}</h2>");
             htmlPageBuilder.AppendLine($"<h2>Active GitHub Users: {pageSummary.ActiveGitHubUsersCount}</h2>");
             htmlPageBuilder.AppendLine($"<h2>% Contributors Across ALL projects: {pctActualContributors.ToString("P")}</h2>");
