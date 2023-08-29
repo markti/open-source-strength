@@ -26,6 +26,7 @@ namespace GitHubCrawler.Services
             _logger = log;
             _telemetryClient = new TelemetryClient(telemetryConfiguration);
             _queueConfig = queueConfig;
+            _gitHubProjectService = gitHubProjectService;
         }
 
         public async Task ProcessRepoPullRequestHistoryAsync(ProcessRepositoryPageRequest repoPageRequest)
