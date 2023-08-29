@@ -65,9 +65,15 @@ namespace GitHubCrawler.Services
 
                     _logger.LogInformation($"username: {userName} {blobContents}");
 
-                    summary.Contributors.Add(userName, userContributionCount);
-                    contributorCount++;
-                    contributionCount += userContributionCount;
+                    if(!summary.Contributors.ContainsKey(userName))
+                    {
+                        summary.Contributors.Add(userName, userContributionCount);
+                        contributorCount++;
+                        contributionCount += userContributionCount;
+                    } else
+                    {
+                        _logger.LogWarning($"Username {userName} showed up twice for this repo {blobFilter}");
+                    }
                 }
             }
 
