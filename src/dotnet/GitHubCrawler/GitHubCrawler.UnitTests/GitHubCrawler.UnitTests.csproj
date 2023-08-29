@@ -29,5 +29,6 @@
   <ItemGroup>
     <ProjectReference Include="..\GitHubCrawler.Services\GitHubCrawler.Services.csproj" />
     <ProjectReference Include="..\GitHubCrawler.Model\GitHubCrawler.Model.csproj" />
+    <ProjectReference Include="..\GitHubCrawler.TestFramework\GitHubCrawler.TestFramework.csproj" />
   </ItemGroup>
 </Project>

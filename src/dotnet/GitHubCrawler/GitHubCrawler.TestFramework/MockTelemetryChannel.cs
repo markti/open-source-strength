@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.ApplicationInsights.Channel;
 
-namespace GitHubCrawler.UnitTests
+namespace GitHubCrawler.TestFramework
 {
     public class MockTelemetryChannel : ITelemetryChannel
     {
@@ -27,4 +27,3 @@ namespace GitHubCrawler.UnitTests
         }
     }
 }
-
