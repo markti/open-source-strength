@@ -36,6 +36,8 @@ namespace GitHubCrawler
             builder.Services.AddSingleton<QueueConfig>(queueConfig);
             builder.Services.AddSingleton<BlobConfig>(blobConfig);
             builder.Services.AddSingleton<ICompanyMemberService, CompanyMemberService>();
+            builder.Services.AddSingleton<IWebPageGenerator, WebPageGenerator>();
+            builder.Services.AddSingleton<IRepositoryReportGenerator, RepositoryReportGenerator>();
             builder.Services.AddSingleton<IGitHubProjectService, GitHubProjectService>();
             builder.Services.AddSingleton<IBulkRequestProcessor, BulkRequestProcessor>();
             builder.Services.AddSingleton<IFanoutRequestProcessor, FanoutRequestProcessor>();
