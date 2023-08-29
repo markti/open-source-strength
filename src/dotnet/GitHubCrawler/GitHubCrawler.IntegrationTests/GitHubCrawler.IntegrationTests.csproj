@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+    <UserSecretsId>86c501b9-21ee-438e-82d8-565b1955a58c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,4 +26,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GitHubCrawler.Services\GitHubCrawler.Services.csproj" />
+    <ProjectReference Include="..\GitHubCrawler.Model\GitHubCrawler.Model.csproj" />
+    <ProjectReference Include="..\GitHubCrawler.TestFramework\GitHubCrawler.TestFramework.csproj" />
+  </ItemGroup>
 </Project>

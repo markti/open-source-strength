@@ -61,20 +61,39 @@ namespace GitHubCrawler.Services
                     var newCosigner = new Cosigner();
 
                     var cells = row.SelectNodes("./td").ToList();
+                    _logger.LogInformation(row.InnerHtml);
                     var cosignerCell = cells.ElementAt(0);
                     var cosignerAnchor = cosignerCell.SelectSingleNode("./a");
-                    newCosigner.Url = cosignerAnchor.Attributes["href"].Value;
-                    newCosigner.Name = cosignerAnchor.InnerText;
+                    if(cosignerAnchor != null)
+                    {
+                        if(cosignerAnchor.Attributes.Contains("href"))
+                        {
+                            newCosigner.Url = cosignerAnchor.Attributes["href"].Value;
+                            _logger.LogWarning("Anchor does not container an 'href' attribute!");
+                        }
+                        newCosigner.Name = cosignerAnchor.InnerText;
+                    }
+                    else
+                    {
+                        _logger.LogWarning("No Anchor Tag");
+                    }
+                    if(newCosigner.Name == "Fabio Pasetti - CloudFire")
+                    {
+                        _logger.LogWarning("Get Ready");
+                    }
                     newCosigner.EntityType = cells.ElementAt(1).InnerText;
                     newCosigner.SupportOffered = cells.ElementAt(2).InnerText;
 
-                    Match match = Regex.Match(newCosigner.Url, GITHUB_USER_REGEX);
-                    if (match.Success)
+                    if(!string.IsNullOrEmpty(newCosigner.Url))
                     {
-                        string username = match.Groups[1].Value;
-                        newCosigner.GitHubUserName = username;
+                        Match match = Regex.Match(newCosigner.Url, GITHUB_USER_REGEX);
+                        if (match.Success)
+                        {
+                            string username = match.Groups[1].Value;
+                            newCosigner.GitHubUserName = username;
 
-                        await _fanoutRequestProcessor.ProcessGitHubUserAsync(username);
+                            await _fanoutRequestProcessor.ProcessGitHubUserAsync(username);
+                        }
                     }
 
                     cosigners.Add(newCosigner);
