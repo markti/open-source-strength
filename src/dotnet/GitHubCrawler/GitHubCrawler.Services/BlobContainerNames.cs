@@ -7,6 +7,7 @@ namespace GitHubCrawler.Services
         public const string COMPANIES = "companies";
         public const string PULL_REQUESTS = "pull-requests";
         public const string USERS = "users";
+        public const string REPOS = "repos";
     }
 }
 

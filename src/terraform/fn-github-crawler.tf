@@ -103,3 +103,9 @@ resource "azurerm_storage_container" "pages" {
   storage_account_name  = azurerm_storage_account.github_crawler.name
   container_access_type = "private"
 }
+
+resource "azurerm_storage_container" "repos" {
+  name                  = "repos"
+  storage_account_name  = azurerm_storage_account.github_crawler.name
+  container_access_type = "private"
+}
