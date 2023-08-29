@@ -108,7 +108,7 @@ namespace GitHubCrawler.Services
                     {
                         var newCosigner = new Cosigner();
                         newCosigner.Name = $"{company.Name} Contributor";
-                        newCosigner.EntityType = $"{company.Name}";
+                        newCosigner.EntityType = $"Company Contributor";
                         newCosigner.GitHubUserName = companyMember;
                         newCosigner.SupportOffered = $"{company.Name} Contributor";
 
@@ -118,10 +118,13 @@ namespace GitHubCrawler.Services
                     }
                 }
 
+                summary.CompanyContributorCount = cosigners.Where(f => f.EntityType == "Company Contributor").Count();
                 summary.CompanyCount = cosigners.Where(f => f.EntityType == "Company").Count();
                 summary.ProjectCount = cosigners.Where(f => f.EntityType == "Project").Count();
                 summary.IndividualCount = cosigners.Where(f => f.EntityType == "Individual").Count();
                 summary.ActiveGitHubUsersCount = cosigners.Where(f => !string.IsNullOrEmpty(f.GitHubUserName)).Count();
+
+                summary.TotalCount = summary.CompanyContributorCount + summary.IndividualCount;
 
                 summary.Cosigners = cosigners;
 
