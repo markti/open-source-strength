@@ -8,6 +8,7 @@ using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Logging;
 using Azure.Storage.Blobs.Models;
+using Octokit;
 
 namespace GitHubCrawler.Services
 {
@@ -58,7 +59,13 @@ namespace GitHubCrawler.Services
             foreach (var repo in repoSummaries)
             {
                 htmlPageBuilder.Append("<li>");
-                htmlPageBuilder.Append($"{repo.Owner}/{repo.Repo}: Contributors {repo.ContributorCount} submitted Pull Requests {repo.PullRequestCount} ");
+                htmlPageBuilder.Append($"{repo.Owner}/{repo.Repo}");
+
+                htmlPageBuilder.AppendLine("<ul>");
+                htmlPageBuilder.Append($"<li>Contributors {repo.ContributorCount}</li>");
+                htmlPageBuilder.Append($"<li>Pull Requests {repo.PullRequestCount}</li>"); 
+                htmlPageBuilder.AppendLine("<ul>");
+
                 htmlPageBuilder.Append("</li>");
             }
             htmlPageBuilder.AppendLine("</ul>");
