@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GitHubCrawler.Model;
 using GitHubCrawler.Services;
 using GitHubCrawler.Services.Interfaces;
+using Microsoft.ApplicationInsights;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
@@ -43,7 +44,6 @@ namespace GitHubCrawler
 
             }
             var htmlResult = await _webPageGenerator.GenerateHtmlAsync(repoSummaryList);
-
             await _webPageGenerator.SaveAsync(htmlResult);
         }
     }

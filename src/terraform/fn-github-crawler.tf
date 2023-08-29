@@ -129,3 +129,10 @@ resource "azurerm_storage_blob" "google_body" {
   type                   = "Block"
   source                 = "./files/google_body.txt"
 }
+resource "azurerm_storage_blob" "google_js" {
+  name                   = "google_js.txt"
+  storage_account_name   = azurerm_storage_account.github_crawler.name
+  storage_container_name = azurerm_storage_container.assets.name
+  type                   = "Block"
+  source                 = "./files/google_js.txt"
+}

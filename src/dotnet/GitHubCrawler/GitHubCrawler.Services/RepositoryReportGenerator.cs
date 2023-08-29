@@ -47,7 +47,7 @@ namespace GitHubCrawler.Services
             var blobFilter = $"{repositoryOwner}/{repositoryName}";
 
             var contributorCount = 0;
-            var contributionCount = 0;
+            var pullRequestCount = 0;
 
             await foreach(var blob in allBlobs)
             {
@@ -60,22 +60,25 @@ namespace GitHubCrawler.Services
                     BlobDownloadResult downloadResult = await blobClient.DownloadContentAsync();
                     string blobContents = downloadResult.Content.ToString();
 
-                    var userContributionCount = 0;
-                    int.TryParse(blobContents, out userContributionCount);
+                    var userPullRequestCount = 0;
+                    int.TryParse(blobContents, out userPullRequestCount);
 
                     _logger.LogInformation($"username: {userName} {blobContents}");
 
                     if(!summary.Contributors.ContainsKey(userName))
                     {
-                        summary.Contributors.Add(userName, userContributionCount);
+                        summary.Contributors.Add(userName, userPullRequestCount);
                         contributorCount++;
-                        contributionCount += userContributionCount;
+                        pullRequestCount += userPullRequestCount;
                     } else
                     {
                         _logger.LogWarning($"Username {userName} showed up twice for this repo {blobFilter}");
                     }
                 }
             }
+
+            summary.ContributorCount = contributorCount;
+            summary.PullRequestCount = pullRequestCount;
 
             return summary;
         }

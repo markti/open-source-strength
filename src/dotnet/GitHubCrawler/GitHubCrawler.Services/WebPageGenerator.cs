@@ -31,7 +31,34 @@ namespace GitHubCrawler.Services
 
 		public async Task<string> GenerateHtmlAsync(List<RepositorySummary> repoSummaries)
 		{
-			return "<h1>Hello Terraform World!!!</h1>";
+            StringBuilder htmlPageBuilder = new StringBuilder();
+
+            htmlPageBuilder.AppendLine("<!DOCTYPE html>");
+
+            htmlPageBuilder.AppendLine("<html>");
+
+            htmlPageBuilder.AppendLine("<head>");
+
+            var googleHead = await ReadFromBlob("assets", "google_head.txt");
+            htmlPageBuilder.AppendLine(googleHead);
+
+            htmlPageBuilder.AppendLine("</head>");
+
+            var googleJs = await ReadFromBlob("assets", "google_js.txt");
+            htmlPageBuilder.AppendLine(googleJs);
+
+            htmlPageBuilder.AppendLine("<body>");
+
+
+            var googleBody = await ReadFromBlob("assets", "google_body.txt");
+            htmlPageBuilder.AppendLine(googleHead);
+            htmlPageBuilder.AppendLine("<h1>Hello Terraform World!!!</h1>");
+
+            htmlPageBuilder.AppendLine("</body>");
+
+            htmlPageBuilder.AppendLine("</html>");
+
+            return htmlPageBuilder.ToString();
         }
         public async Task SaveAsync(string webpageContent)
         {
@@ -63,6 +90,8 @@ namespace GitHubCrawler.Services
 
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(blobContent));
             await blobClient.UploadAsync(stream, overwrite: true);
+
+            _telemetryClient.TrackEvent("updated HTML");
         }
     }
 }
