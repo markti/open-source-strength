@@ -76,10 +76,10 @@ namespace GitHubCrawler.Services
                 htmlPageBuilder.Append($"{repo.Owner}/{repo.Repo}");
 
                 htmlPageBuilder.AppendLine("<ul>");
-                htmlPageBuilder.Append($"<li>Contributors {repo.ContributorCount}</li>");
+                htmlPageBuilder.Append($"<li>Contributors: {repo.ContributorCount}</li>");
                 htmlPageBuilder.Append($"<ul><li>{percentContributors.ToString("P")} of cosigners contributed to this repo.</li></ul>");
-                htmlPageBuilder.Append($"<li>Pull Requests {repo.PullRequestCount}</li>");
-                htmlPageBuilder.Append($"<ul><li>{percentOfPullRequests.ToString("P")} of ALL pull requests contributed by the cosigners.</li></ul>");
+                htmlPageBuilder.Append($"<li>Pull Requests: {repo.PullRequestCount}</li>");
+                htmlPageBuilder.Append($"<ul><li>{percentOfPullRequests.ToString("P")} of ALL pull requests ({totalPullRequestCount}) contributed by the cosigners.</li></ul>");
                 htmlPageBuilder.AppendLine("</ul>");
 
                 htmlPageBuilder.Append("</li>");
