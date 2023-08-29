@@ -72,7 +72,7 @@ namespace GitHubCrawler.Services
                 htmlPageBuilder.AppendLine("<ul>");
                 htmlPageBuilder.Append($"<li>Contributors {repo.ContributorCount}. {percentContributors.ToString("P")} of signers contributed to this repo.</li>");
                 htmlPageBuilder.Append($"<li>Pull Requests {repo.PullRequestCount}</li>"); 
-                htmlPageBuilder.AppendLine("<ul>");
+                htmlPageBuilder.AppendLine("</ul>");
 
                 htmlPageBuilder.Append("</li>");
             }
