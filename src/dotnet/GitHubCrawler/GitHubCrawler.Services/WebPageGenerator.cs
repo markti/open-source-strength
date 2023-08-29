@@ -54,6 +54,15 @@ namespace GitHubCrawler.Services
             htmlPageBuilder.AppendLine(googleHead);
             htmlPageBuilder.AppendLine("<h1>Hello Terraform World!!!</h1>");
 
+            htmlPageBuilder.AppendLine("<ul>");
+            foreach (var repo in repoSummaries)
+            {
+                htmlPageBuilder.Append("<li>");
+                htmlPageBuilder.Append($"{repo.Owner}/{repo.Repo}: Contributors {repo.ContributorCount} submitted Pull Requests {repo.PullRequestCount} ");
+                htmlPageBuilder.Append("</li>");
+            }
+            htmlPageBuilder.AppendLine("</ul>");
+
             htmlPageBuilder.AppendLine("</body>");
 
             htmlPageBuilder.AppendLine("</html>");
