@@ -19,19 +19,25 @@ namespace GitHubCrawler.Services
         private readonly BlobConfig _blobConfig;
         private readonly ICompanyMemberService _companyMemberService;
         private readonly IFanoutRequestProcessor _fanoutRequestProcessor;
+        private readonly IPageProcessor _pageProcessor;
 
         public WebPageGenerator(
                 ILogger<WebPageGenerator> logger,
                 TelemetryConfiguration telemetryConfiguration,
-                BlobConfig blobConfig)
+                BlobConfig blobConfig,
+                IPageProcessor pageProcessor)
         {
             _logger = logger;
             _telemetryClient = new TelemetryClient(telemetryConfiguration);
             _blobConfig = blobConfig;
+            _pageProcessor = pageProcessor;
         }
 
 		public async Task<string> GenerateHtmlAsync(List<RepositorySummary> repoSummaries)
 		{
+            var pageSummary = await _pageProcessor.GetLatestAsync();
+
+
             StringBuilder htmlPageBuilder = new StringBuilder();
 
             htmlPageBuilder.AppendLine("<!DOCTYPE html>");
@@ -58,11 +64,13 @@ namespace GitHubCrawler.Services
             htmlPageBuilder.AppendLine("<ul>");
             foreach (var repo in repoSummaries)
             {
+                double percentContributors = (double)repo.ContributorCount / (double)pageSummary.TotalCount;
+
                 htmlPageBuilder.Append("<li>");
                 htmlPageBuilder.Append($"{repo.Owner}/{repo.Repo}");
 
                 htmlPageBuilder.AppendLine("<ul>");
-                htmlPageBuilder.Append($"<li>Contributors {repo.ContributorCount}</li>");
+                htmlPageBuilder.Append($"<li>Contributors {repo.ContributorCount} ({percentContributors.ToString("P")})</li>");
                 htmlPageBuilder.Append($"<li>Pull Requests {repo.PullRequestCount}</li>"); 
                 htmlPageBuilder.AppendLine("<ul>");
 

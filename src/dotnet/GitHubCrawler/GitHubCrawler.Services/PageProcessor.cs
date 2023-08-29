@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using HtmlAgilityPack;
+using Azure.Storage.Blobs.Models;
 
 namespace GitHubCrawler.Services
 {
@@ -124,18 +125,14 @@ namespace GitHubCrawler.Services
 
                 summary.Cosigners = cosigners;
 
-                var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
-                var blobContainerClient = blobServiceClient.GetBlobContainerClient(BlobContainerNames.PAGES);
-
                 DateTime utcTimestamp = DateTime.UtcNow;
 
+                var containerName = BlobContainerNames.PAGES;
                 var blobName = "open_tf/" + utcTimestamp.ToString("dd_MM_yyyy") + ".json";
-                var blobClient = blobContainerClient.GetBlobClient(blobName);
-
                 var pageData = JsonConvert.SerializeObject(summary);
 
-                using var stream = new MemoryStream(Encoding.UTF8.GetBytes(pageData));
-                await blobClient.UploadAsync(stream, overwrite: true);
+                await SaveAsync(containerName, blobName, pageData);
+                await SaveAsync(containerName, "latest.json", pageData);
 
                 var eventProperties = new Dictionary<string, string>();
                 eventProperties.Add("companies", summary.CompanyCount.ToString());
@@ -150,6 +147,36 @@ namespace GitHubCrawler.Services
                 Console.WriteLine("Table with class 'co-signed' not found.");
             }
             return summary;
+        }
+
+        public async Task<CosignerSummary> GetLatestAsync()
+        {
+            return await GetFromBlobAsync("latest.json");
+        }
+        public async Task<CosignerSummary> GetFromBlobAsync(string blobName)
+        {
+            var containerName = BlobContainerNames.PAGES;
+            var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
+            var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+            var blobClient = blobContainerClient.GetBlobClient(blobName);
+
+            BlobDownloadResult downloadResult = await blobClient.DownloadContentAsync();
+            string blobContents = downloadResult.Content.ToString();
+            var objectData = JsonConvert.DeserializeObject<CosignerSummary>(blobContents);
+
+            return objectData;
+        }
+
+        private async Task SaveAsync(string containerName, string blobName, string blobContent)
+        {
+            var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
+            var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+            var blobClient = blobContainerClient.GetBlobClient(blobName);
+
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(blobContent));
+            await blobClient.UploadAsync(stream, overwrite: true);
         }
     }
 }
