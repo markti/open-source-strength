@@ -132,7 +132,7 @@ namespace GitHubCrawler.Services
                 var pageData = JsonConvert.SerializeObject(summary);
 
                 await SaveAsync(containerName, blobName, pageData);
-                await SaveAsync(containerName, "latest.json", pageData);
+                await SaveAsync(containerName, "open_tf/latest.json", pageData);
 
                 var eventProperties = new Dictionary<string, string>();
                 eventProperties.Add("companies", summary.CompanyCount.ToString());
