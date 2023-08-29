@@ -20,17 +20,20 @@ namespace GitHubCrawler.Services
         private readonly ICompanyMemberService _companyMemberService;
         private readonly IFanoutRequestProcessor _fanoutRequestProcessor;
         private readonly IPageProcessor _pageProcessor;
+        private readonly IBulkRequestProcessor _bulkRequestProcessor;
 
         public WebPageGenerator(
                 ILogger<WebPageGenerator> logger,
                 TelemetryConfiguration telemetryConfiguration,
                 BlobConfig blobConfig,
-                IPageProcessor pageProcessor)
+                IPageProcessor pageProcessor,
+                IBulkRequestProcessor bulkRequestProcessor)
         {
             _logger = logger;
             _telemetryClient = new TelemetryClient(telemetryConfiguration);
             _blobConfig = blobConfig;
             _pageProcessor = pageProcessor;
+            _bulkRequestProcessor = bulkRequestProcessor;
         }
 
 		public async Task<string> GenerateHtmlAsync(List<RepositorySummary> repoSummaries)
@@ -65,13 +68,18 @@ namespace GitHubCrawler.Services
             foreach (var repo in repoSummaries)
             {
                 double percentContributors = (double)repo.ContributorCount / (double)pageSummary.TotalCount;
+                var totalPullRequestCount = await _bulkRequestProcessor.GetTotalPullRequestCountAsync(repo.Owner, repo.Repo);
 
+                double percentOfPullRequests = (double)repo.PullRequestCount / (double)totalPullRequestCount;
+ 
                 htmlPageBuilder.Append("<li>");
                 htmlPageBuilder.Append($"{repo.Owner}/{repo.Repo}");
 
                 htmlPageBuilder.AppendLine("<ul>");
-                htmlPageBuilder.Append($"<li>Contributors {repo.ContributorCount}. {percentContributors.ToString("P")} of signers contributed to this repo.</li>");
-                htmlPageBuilder.Append($"<li>Pull Requests {repo.PullRequestCount}</li>"); 
+                htmlPageBuilder.Append($"<li>Contributors {repo.ContributorCount}</li>");
+                htmlPageBuilder.Append($"<ul><li>{percentContributors.ToString("P")} of cosigners contributed to this repo.</li></ul>");
+                htmlPageBuilder.Append($"<li>Pull Requests {repo.PullRequestCount}</li>");
+                htmlPageBuilder.Append($"<ul><li>{percentOfPullRequests.ToString("P")} of ALL pull requests contributed by the cosigners.</li></ul>");
                 htmlPageBuilder.AppendLine("</ul>");
 
                 htmlPageBuilder.Append("</li>");

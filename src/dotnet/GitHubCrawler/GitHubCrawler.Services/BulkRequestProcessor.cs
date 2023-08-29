@@ -10,6 +10,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Octokit;
 
 namespace GitHubCrawler.Services
 {
@@ -72,6 +73,48 @@ namespace GitHubCrawler.Services
                 };
                 await _fanoutRequestProcessor.ProcessRepoPullRequestHistoryAsync(nextPageRequest);
             }
+        }
+
+        public async Task<int> CalculatePullRequestCountAsync(string owner, string repo)
+        {
+            var matchingPullRequests = 0;
+            var currentPageNumber = 1;
+            var shouldContinue = true;
+
+            var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
+            var blobContainerClient = blobServiceClient.GetBlobContainerClient(BlobContainerNames.PULL_REQUESTS);
+
+            while (shouldContinue)
+            {
+                var blobName = $"{owner}/{repo}/{currentPageNumber}.json";
+                var blobClient = blobContainerClient.GetBlobClient(blobName);
+
+                var blobExistsResult = (await blobClient.ExistsAsync()).Value;
+                if (!blobExistsResult)
+                {
+                    shouldContinue = false;
+                }
+                else
+                {
+                    BlobDownloadResult downloadResult = await blobClient.DownloadContentAsync();
+                    string blobContents = downloadResult.Content.ToString();
+
+                    // Deserialize blob contents to FooBar object
+                    var prSummary = JsonConvert.DeserializeObject<List<PullRequestSummary>>(blobContents);
+
+                    if (prSummary == null)
+                    {
+                    }
+                    else
+                    {
+                        var pullRequestsInCurrentBatch = prSummary.Count();
+                        matchingPullRequests += pullRequestsInCurrentBatch;
+                    }
+                    currentPageNumber++;
+                }
+            }
+
+            return matchingPullRequests;
         }
 
         public async Task<int> ProcessGitHubUserContributionRequest(ProcessGitHubUserProviderRequest userRequest)
@@ -170,6 +213,32 @@ namespace GitHubCrawler.Services
             }
 
             return matchingPullRequests;
+        }
+
+        public async Task<int> GetTotalPullRequestCountAsync(string owner, string repo)
+        {
+
+            var containerName = BlobContainerNames.PULL_REQUESTS;
+            var blobName = $"{owner}/${repo}/total.txt";
+            var blobContent = await ReadFromBlobAsync(containerName, blobName);
+
+            var totalCount = 0;
+
+            int.TryParse(blobContent, out totalCount);
+
+            return totalCount;
+        }
+
+        private async Task<string> ReadFromBlobAsync(string containerName, string blobName)
+        {
+            var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
+            var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+            var blobClient = blobContainerClient.GetBlobClient(blobName);
+
+            BlobDownloadResult downloadResult = await blobClient.DownloadContentAsync();
+            string blobContents = downloadResult.Content.ToString();
+            return blobContents;
         }
 
         public async Task SaveAsync(string containerName, string blobName, string blobContent)
