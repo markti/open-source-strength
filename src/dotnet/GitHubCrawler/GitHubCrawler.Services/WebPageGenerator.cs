@@ -88,8 +88,18 @@ namespace GitHubCrawler.Services
 
             var blobClient = blobContainerClient.GetBlobClient(blobName);
 
+            var httpHeaders = new BlobHttpHeaders
+            {
+                ContentType = "text/html"
+            };
+
+            var uploadOptions = new BlobUploadOptions
+            {
+                HttpHeaders = httpHeaders
+            };
+
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(blobContent));
-            await blobClient.UploadAsync(stream, overwrite: true);
+            await blobClient.UploadAsync(stream, uploadOptions);
 
             _telemetryClient.TrackEvent("updated HTML");
         }
