@@ -27,7 +27,7 @@ namespace GitHubCrawler
         }
 
         [FunctionName("RepoReportGenerator")]
-        public async Task GenerateReports([TimerTrigger("*/10 * * * * *")]TimerInfo myTimer)
+        public async Task GenerateReports([TimerTrigger("0 * * * * *")]TimerInfo myTimer)
         {
             var projectList = _gitHubProjectService.GetProjects();
 
