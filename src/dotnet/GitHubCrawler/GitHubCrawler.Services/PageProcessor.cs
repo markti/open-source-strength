@@ -151,7 +151,7 @@ namespace GitHubCrawler.Services
 
         public async Task<CosignerSummary> GetLatestAsync()
         {
-            return await GetFromBlobAsync("latest.json");
+            return await GetFromBlobAsync("open_tf/latest.json");
         }
         public async Task<CosignerSummary> GetFromBlobAsync(string blobName)
         {

@@ -64,7 +64,7 @@ namespace GitHubCrawler.Services
             htmlPageBuilder.AppendLine("<ul>");
             foreach (var repo in repoSummaries)
             {
-                double percentContributors = (double)repo.ContributorCount / (double)pageSummary.TotalCount;
+                double percentContributors = (double)repo.ContributorCount / (double)pageSummary.IndividualCount;
 
                 htmlPageBuilder.Append("<li>");
                 htmlPageBuilder.Append($"{repo.Owner}/{repo.Repo}");
