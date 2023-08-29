@@ -43,6 +43,8 @@ namespace GitHubCrawler
 
             }
             var htmlResult = await _webPageGenerator.GenerateHtmlAsync(repoSummaryList);
+
+            await _webPageGenerator.SaveAsync(htmlResult);
         }
     }
 }
