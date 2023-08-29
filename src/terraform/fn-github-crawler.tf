@@ -109,3 +109,23 @@ resource "azurerm_storage_container" "repos" {
   storage_account_name  = azurerm_storage_account.github_crawler.name
   container_access_type = "private"
 }
+
+resource "azurerm_storage_container" "assets" {
+  name                  = "assets"
+  storage_account_name  = azurerm_storage_account.github_crawler.name
+  container_access_type = "private"
+}
+resource "azurerm_storage_blob" "google_head" {
+  name                   = "google_head.txt"
+  storage_account_name   = azurerm_storage_account.github_crawler.name
+  storage_container_name = azurerm_storage_container.assets.name
+  type                   = "Block"
+  source                 = "./files/google_head.txt"
+}
+resource "azurerm_storage_blob" "google_body" {
+  name                   = "google_body.txt"
+  storage_account_name   = azurerm_storage_account.github_crawler.name
+  storage_container_name = azurerm_storage_container.assets.name
+  type                   = "Block"
+  source                 = "./files/google_body.txt"
+}

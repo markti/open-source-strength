@@ -54,7 +54,7 @@ namespace GitHubCrawler.Services
                 _logger.LogInformation(blob.Name);
                 if(blob.Name.Contains(blobFilter))
                 {
-                    var userName = blob.Name.Split('/')[0];
+                    var userName = blob.Name.Split('/')[0].Trim();
 
                     var blobClient = containerClient.GetBlobClient(blob.Name);
                     BlobDownloadResult downloadResult = await blobClient.DownloadContentAsync();

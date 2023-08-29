@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Logging;
+using Azure.Storage.Blobs.Models;
 
 namespace GitHubCrawler.Services
 {
@@ -39,6 +40,18 @@ namespace GitHubCrawler.Services
 
             await SaveAsync(containerName, blobName, webpageContent);
 
+        }
+
+        private async Task<string> ReadFromBlob(string containerName, string blobName)
+        {
+            var blobServiceClient = new BlobServiceClient(_blobConfig.ConnectionString);
+            var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+            var blobClient = blobContainerClient.GetBlobClient(blobName);
+
+            BlobDownloadResult downloadResult = await blobClient.DownloadContentAsync();
+            string blobContents = downloadResult.Content.ToString();
+            return blobContents;
         }
 
         private async Task SaveAsync(string containerName, string blobName, string blobContent)
