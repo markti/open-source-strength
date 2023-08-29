@@ -17,15 +17,18 @@ namespace GitHubCrawler.Services
         private readonly BlobConfig _blobConfig;
         private readonly ICompanyMemberService _companyMemberService;
         private readonly IFanoutRequestProcessor _fanoutRequestProcessor;
+        private readonly IBulkRequestProcessor _bulkRequestProcessor;
 
         public RepositoryReportGenerator(
                 ILogger<RepositoryReportGenerator> logger,
                 TelemetryConfiguration telemetryConfiguration,
-                BlobConfig blobConfig)
+                BlobConfig blobConfig,
+                IBulkRequestProcessor bulkRequestProcessor)
         {
             _logger = logger;
             _telemetryClient = new TelemetryClient(telemetryConfiguration);
             _blobConfig = blobConfig;
+            _bulkRequestProcessor = bulkRequestProcessor;
         }
 
         public async Task<RepositorySummary> GetUserContributionsAsync(string repositoryOwner, string repositoryName)
@@ -77,6 +80,7 @@ namespace GitHubCrawler.Services
                 }
             }
 
+            summary.TotalPullRequestCount = await _bulkRequestProcessor.GetTotalPullRequestCountAsync(repositoryOwner, repositoryName);
             summary.ContributorCount = contributorCount;
             summary.PullRequestCount = pullRequestCount;
 

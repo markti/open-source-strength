@@ -19,6 +19,7 @@ namespace GitHubCrawler.IntegrationTests
         private readonly IConfiguration _configuration;
         private readonly TelemetryConfiguration _telemetryConfiguration;
         private readonly BlobConfig _blobConfig;
+        private readonly Mock<IBulkRequestProcessor> _mockBulkRequestProcessor;
 
         public RepositoryReportGeneratorTests(ITestOutputHelper output)
         {
@@ -41,13 +42,15 @@ namespace GitHubCrawler.IntegrationTests
             {
                 ConnectionString = _configuration["STORAGE_CONNECTION_STRING"]
             };
+
+            _mockBulkRequestProcessor = new Mock<IBulkRequestProcessor>();
         }
 
         [Trait("Category", "Integration")]
         [Fact]
         public async Task Test1()
         {
-            var pageProcessor = new RepositoryReportGenerator(_logger, _telemetryConfiguration, _blobConfig);
+            var pageProcessor = new RepositoryReportGenerator(_logger, _telemetryConfiguration, _blobConfig, _mockBulkRequestProcessor.Object);
 
             var cosignerSummary = await pageProcessor.GetUserContributionsAsync("hashicorp", "terraform");
 

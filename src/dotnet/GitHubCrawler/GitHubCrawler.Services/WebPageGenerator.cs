@@ -20,26 +20,42 @@ namespace GitHubCrawler.Services
         private readonly ICompanyMemberService _companyMemberService;
         private readonly IFanoutRequestProcessor _fanoutRequestProcessor;
         private readonly IPageProcessor _pageProcessor;
-        private readonly IBulkRequestProcessor _bulkRequestProcessor;
 
         public WebPageGenerator(
                 ILogger<WebPageGenerator> logger,
                 TelemetryConfiguration telemetryConfiguration,
                 BlobConfig blobConfig,
-                IPageProcessor pageProcessor,
-                IBulkRequestProcessor bulkRequestProcessor)
+                IPageProcessor pageProcessor
+                )
         {
             _logger = logger;
             _telemetryClient = new TelemetryClient(telemetryConfiguration);
             _blobConfig = blobConfig;
             _pageProcessor = pageProcessor;
-            _bulkRequestProcessor = bulkRequestProcessor;
         }
 
 		public async Task<string> GenerateHtmlAsync(List<RepositorySummary> repoSummaries)
 		{
             var pageSummary = await _pageProcessor.GetLatestAsync();
+            var contributorList = new List<string>();
+            foreach (var repo in repoSummaries)
+            {
+                foreach(var contributor in repo.Contributors.Keys)
+                {
+                    if(!contributorList.Contains(contributor))
+                    {
+                        contributorList.Add(contributor);
+                    }
+                }
+            }
 
+            var activeGitHubUserCount = pageSummary.ActiveGitHubUsersCount;
+            var actualContributorCount = contributorList.Count;
+            var allContributionsAcrossProjects = repoSummaries.Sum(f => f.PullRequestCount);
+            var allPullRequestsAcrossProjects = repoSummaries.Sum(f => f.TotalPullRequestCount);
+
+            var pctContributionsAcrossProjects = (double)allContributionsAcrossProjects / (double)allPullRequestsAcrossProjects;
+            var pctActualContributors = (double)actualContributorCount / (double)pageSummary.TotalCount;
 
             StringBuilder htmlPageBuilder = new StringBuilder();
 
@@ -64,13 +80,20 @@ namespace GitHubCrawler.Services
             htmlPageBuilder.AppendLine(googleHead);
             htmlPageBuilder.AppendLine("<h1>Hello Terraform World!!!</h1>");
 
+            htmlPageBuilder.AppendLine($"<h2>Total Cosigners: {pageSummary.TotalCount}</h2>");
+            htmlPageBuilder.AppendLine($"<h2>Active GitHub Users: {pageSummary.ActiveGitHubUsersCount}</h2>");
+            htmlPageBuilder.AppendLine($"<h2>% Contributors Across ALL projects: {pctActualContributors.ToString("P")}</h2>");
+
+            htmlPageBuilder.AppendLine($"<h2>Total Contributions by Cosigners Acrosss ALL projects: {allContributionsAcrossProjects}</h2>");
+            htmlPageBuilder.AppendLine($"<h2>Total Contributions Acrosss ALL projects: {allPullRequestsAcrossProjects}</h2>");
+            htmlPageBuilder.AppendLine($"<h2>% Contributed by Cosigners Acrosss ALL projects: {pctContributionsAcrossProjects.ToString("P")}</h2>");
+
             htmlPageBuilder.AppendLine("<ul>");
             foreach (var repo in repoSummaries)
             {
                 double percentContributors = (double)repo.ContributorCount / (double)pageSummary.TotalCount;
-                var totalPullRequestCount = await _bulkRequestProcessor.GetTotalPullRequestCountAsync(repo.Owner, repo.Repo);
 
-                double percentOfPullRequests = (double)repo.PullRequestCount / (double)totalPullRequestCount;
+                double percentOfPullRequests = (double)repo.PullRequestCount / (double)repo.TotalPullRequestCount;
  
                 htmlPageBuilder.Append("<li>");
                 htmlPageBuilder.Append($"{repo.Owner}/{repo.Repo}");
@@ -79,7 +102,7 @@ namespace GitHubCrawler.Services
                 htmlPageBuilder.Append($"<li>Contributors: {repo.ContributorCount}</li>");
                 htmlPageBuilder.Append($"<ul><li>{percentContributors.ToString("P")} of cosigners contributed to this repo.</li></ul>");
                 htmlPageBuilder.Append($"<li>Pull Requests: {repo.PullRequestCount}</li>");
-                htmlPageBuilder.Append($"<ul><li>{percentOfPullRequests.ToString("P")} of ALL pull requests ({totalPullRequestCount}) contributed by the cosigners.</li></ul>");
+                htmlPageBuilder.Append($"<ul><li>{percentOfPullRequests.ToString("P")} of ALL pull requests ({repo.TotalPullRequestCount}) contributed by the cosigners.</li></ul>");
                 htmlPageBuilder.AppendLine("</ul>");
 
                 htmlPageBuilder.Append("</li>");

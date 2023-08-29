@@ -7,7 +7,8 @@ namespace GitHubCrawler.Model
 		public string Repo { get; set; }
 		public int ContributorCount { get; set; }
 		public int PullRequestCount { get; set; }
+        public int TotalPullRequestCount { get; set; }
 
-		public Dictionary<string, int> Contributors { get; set; }
-	}
+        public Dictionary<string, int> Contributors { get; set; }
+    }
 }
