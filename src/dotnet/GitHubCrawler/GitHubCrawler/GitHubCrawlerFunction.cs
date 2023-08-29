@@ -65,7 +65,7 @@ namespace GitHubCrawler
                 var totalCount = await _bulkRequestProcessor.CalculatePullRequestCountAsync(project.Owner, project.Repo);
 
                 var containerName = BlobContainerNames.PULL_REQUESTS;
-                var blobName = $"{project.Owner}/${project.Repo}/total.txt";
+                var blobName = $"{project.Owner}/{project.Repo}/total.txt";
                 await _bulkRequestProcessor.SaveAsync(containerName, blobName, totalCount.ToString());
             }
 

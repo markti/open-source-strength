@@ -219,7 +219,7 @@ namespace GitHubCrawler.Services
         {
 
             var containerName = BlobContainerNames.PULL_REQUESTS;
-            var blobName = $"{owner}/${repo}/total.txt";
+            var blobName = $"{owner}/{repo}/total.txt";
             var blobContent = await ReadFromBlobAsync(containerName, blobName);
 
             var totalCount = 0;
