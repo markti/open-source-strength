@@ -71,5 +71,25 @@ namespace GitHubCrawler
 
             return new OkResult();
         }
+
+        [FunctionName("repo-pull-request-crawler")]
+        public async Task GeneratePullRequestHistory([TimerTrigger("0 0 0 * * *")] TimerInfo myTimer)
+        {
+            var projectList = _gitHubProjectService.GetProjects();
+
+            var repoSummaryList = new List<RepositorySummary>();
+
+            foreach (var project in projectList)
+            {
+                var pageRequest = new ProcessRepositoryPageRequest()
+                {
+                    Owner = project.Owner,
+                    Repo = project.Repo,
+                    PageNumber = 1
+                };
+
+                await _fanoutRequestProcessor.ProcessRepoPullRequestHistoryAsync(pageRequest);
+            }
+        }
     }
 }
